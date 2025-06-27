@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Sentinel之——简述 | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta property="og:type" content="article">
+<meta property="og:title" content="Sentinel之——简述">
+<meta property="og:url" content="http://yoursite.com/2019/07/27/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E7%AE%80%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://user-images.githubusercontent.com/9434884/43697219-3cb4ef3a-9975-11e8-9a9c-73f4f537442d.png">
+<meta property="og:image" content="http://qn.zwuyang.cn/Sentinel%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6/no.watermark">
+<meta property="og:image" content="http://qn.zwuyang.cn/Sentinel%E7%89%B9%E6%80%A7-%E6%A1%86%E5%9B%BE/no.watermark">
+<meta property="og:image" content="http://qn.zwuyang.cn/Sentinel%E5%BC%80%E5%8E%9F%E7%94%9F%E6%80%81/no.watermark">
+<meta property="og:image" content="http://qn.zwuyang.cn/sentinel%E5%92%8CHystrix%E7%9A%84%E5%AF%B9%E6%AF%94/no.watermark">
+<meta property="og:image" content="http://user-images.githubusercontent.com/9434884/50627838-5cd92800-0f70-11e9-891e-31430adcbbf4.png">
+<meta property="og:image" content="http://user-images.githubusercontent.com/9434884/50678855-aa6e9700-103b-11e9-83de-2a33e580325f.png">
+<meta property="og:image" content="http://qn.zwuyang.cn/%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E9%99%90%E6%B5%81%E5%9B%BE/no.watermark">
+<meta property="og:image" content="http://qn.zwuyang.cn/sentinel_port/no.watermark">
+<meta property="article:published_time" content="2019-07-27T15:18:32.000Z">
+<meta property="article:modified_time" content="2019-11-04T15:38:55.000Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="Sentinel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://user-images.githubusercontent.com/9434884/43697219-3cb4ef3a-9975-11e8-9a9c-73f4f537442d.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Sentinel之——简述" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            Sentinel之——简述
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/07/27/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E7%AE%80%E8%BF%B0/">
+            <time datetime="2019-07-27T15:18:32.000Z" itemprop="datePublished">2019-07-27</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/Sentinel/">Sentinel</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Sentinel/" rel="tag">Sentinel</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-Sentinel-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-text">0 Sentinel 是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Sentinel-%E7%89%B9%E6%80%A7%E6%A6%82%E8%A7%88"><span class="toc-text">1 Sentinel 特性概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Sentinel-%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-text">2 Sentinel 组成部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Sentinel-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-text">3 Sentinel 核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%B5%84%E6%BA%90"><span class="toc-text">3.1 资源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90%E6%96%B9%E5%BC%8F"><span class="toc-text">3.1.1 定义资源方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%A7%84%E5%88%99"><span class="toc-text">3.2 规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E8%A7%84%E5%88%99-FlowRule"><span class="toc-text">3.2.1 流量控制规则 (FlowRule)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7%E8%A7%84%E5%88%99-DegradeRule"><span class="toc-text">3.2.2 熔断降级规则 (DegradeRule)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E7%B3%BB%E7%BB%9F%E4%BF%9D%E6%8A%A4%E8%A7%84%E5%88%99-SystemRule"><span class="toc-text">3.2.3 系统保护规则 (SystemRule)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-4-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E8%A7%84%E5%88%99-AuthorityRule"><span class="toc-text">3.2.4 访问控制规则 (AuthorityRule)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-5-%E7%83%AD%E7%82%B9%E8%A7%84%E5%88%99-ParamFlowRule"><span class="toc-text">3.2.5 热点规则 (ParamFlowRule)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9F%A5%E8%AF%A2%E5%92%8C%E6%9B%B4%E6%94%B9%E8%A7%84%E5%88%99"><span class="toc-text">4 查询和更改规则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%9F%A5%E8%AF%A2%E8%A7%84%E5%88%99"><span class="toc-text">4.1 查询规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9B%B4%E6%94%B9%E8%A7%84%E5%88%99"><span class="toc-text">4.2 更改规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="toc-text">4.3 注意点</span></a></li></ol></li></ol>
+                </div>
+            
+            <img src="http://user-images.githubusercontent.com/9434884/43697219-3cb4ef3a-9975-11e8-9a9c-73f4f537442d.png" alt="Sentinel" width="542" height="202"/>
+
+<span id="more"></span>
+
+<h2 id="0-Sentinel-是什么"><a href="#0-Sentinel-是什么" class="headerlink" title="0 Sentinel 是什么"></a>0 Sentinel 是什么</h2><p>面向分布式服务架构的流量控制框架，主要包括<code>流量控制</code>、<code>熔断降级</code>、<code>系统负载保护</code>，目的是保证系统稳定性。</p>
+<h2 id="1-Sentinel-特性概览"><a href="#1-Sentinel-特性概览" class="headerlink" title="1 Sentinel 特性概览"></a>1 Sentinel 特性概览</h2><p><strong>Sentinel 的流量控制:</strong></p>
+<img src="http://qn.zwuyang.cn/Sentinel流量控制/no.watermark" alt="Sentinel 的流量控制" width="582" height="302"/>
+
+<p><strong>Sentinel 的主要特性:</strong></p>
+<img src="http://qn.zwuyang.cn/Sentinel特性-框图/no.watermark" alt="Sentinel 的主要特性" width="542" height="302"/>
+
+<p><strong>Sentinel 的开源生态:</strong></p>
+<img src="http://qn.zwuyang.cn/Sentinel开原生态/no.watermark" alt="Sentinel 的主要特性" width="692" height="352"/>
+
+<p><strong>与hystrix的对比:</strong></p>
+<img src="http://qn.zwuyang.cn/sentinel和Hystrix的对比/no.watermark" alt="与hystrix的对比" width="592" height="432"/>
+
+<h2 id="2-Sentinel-组成部分"><a href="#2-Sentinel-组成部分" class="headerlink" title="2 Sentinel 组成部分"></a>2 Sentinel 组成部分</h2><p>Sentinel 分为两个部分:</p>
+<ul>
+<li>核心库（Java 客户端）不依赖任何框架&#x2F;库，能够运行于所有 Java 运行时环境。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.alibaba.csp&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;sentinel-core&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.6.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>引入上面包即可使用Sentinel的各项限流功能。</p>
+<ul>
+<li>控制台（Dashboard），可以理解为单独的项目，作用是可视化查看<code>客户端(接入核心库的应用程序)</code>的流控情况，并且可以在<code>控制台</code>上操作界面来动态设置<code>客户端</code>的流控参数。</li>
+</ul>
+<img src="http://user-images.githubusercontent.com/9434884/50627838-5cd92800-0f70-11e9-891e-31430adcbbf4.png" alt="控制台1" width="542" height="202"/>
+
+
+<img src="http://user-images.githubusercontent.com/9434884/50678855-aa6e9700-103b-11e9-83de-2a33e580325f.png" alt="控制台2" width="542" height="202"/>
+
+
+<h2 id="3-Sentinel-核心概念"><a href="#3-Sentinel-核心概念" class="headerlink" title="3 Sentinel 核心概念"></a>3 Sentinel 核心概念</h2><p><strong>1. 资源</strong></p>
+<p><strong>2. 规则</strong></p>
+<p>Sentinel 的工作流程大体分两步：</p>
+<ul>
+<li>定义资源</li>
+<li>定义资源流控规则</li>
+</ul>
+<h3 id="3-1-资源"><a href="#3-1-资源" class="headerlink" title="3.1 资源"></a>3.1 资源</h3><p>所谓<code>资源</code></p>
+<ul>
+<li>从理念上它是被流控保护的对象</li>
+<li>从编码上讲，它可以是一个方法，或方法体内的一段代码</li>
+</ul>
+<p>只要有了资源，就可以定义各种流控规则。在编码的时候，只需要考虑某代码是否需要保护，如果需要保护，就可以将其定义为一个资源</p>
+<h4 id="3-1-1-定义资源方式"><a href="#3-1-1-定义资源方式" class="headerlink" title="3.1.1 定义资源方式"></a>3.1.1 定义资源方式</h4><p>一共有5中定义资源的方式，文档链接：<a href="https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8#%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90">https://github.com/alibaba/Sentinel/wiki/如何使用#定义资源</a></p>
+<p><strong>1. 布尔类型定义资源</strong></p>
+<p>适用于定义代码片段的场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 资源名可使用任意有业务语义的字符串</span></span><br><span class="line">  <span class="keyword">if</span> (SphO.entry(<span class="string">&quot;自定义资源名&quot;</span>)) &#123;</span><br><span class="line">    <span class="comment">// 务必保证finally会被执行</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">/** 被保护的业务逻辑 */</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      SphO.exit();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">    <span class="comment">// 进行相应的处理操作</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 抛异常方式定义资源</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Entry</span> <span class="variable">entry</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"><span class="comment">// 务必保证finally会被执行</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="comment">// 资源名可使用任意有业务语义的字符串</span></span><br><span class="line">  entry = SphU.entry(<span class="string">&quot;自定义资源名&quot;</span>);</span><br><span class="line">  <span class="comment">// 被保护的业务逻辑</span></span><br><span class="line">  <span class="comment">// do something...</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (BlockException e1) &#123;</span><br><span class="line">  <span class="comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">  <span class="comment">// 进行相应的处理操作</span></span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (entry != <span class="literal">null</span>) &#123;</span><br><span class="line">    entry.exit();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>3. 注解方式定义资源</strong></p>
+<p>适用于将方法定义为资源的场景：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SentinelResource(value = &quot;anno&quot;, blockHandler = &quot;handleException&quot;, fallback = &quot;helloFallback&quot;)</span></span><br><span class="line"><span class="keyword">public</span> Person <span class="title function_">getPerson</span><span class="params">(String name)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">    person.setAge(<span class="number">120</span>);</span><br><span class="line">    person.setName(<span class="string">&quot;i am &quot;</span> + name);</span><br><span class="line"></span><br><span class="line">    log.warn(<span class="string">&quot;成功原函数：[&#123;&#125;]&quot;</span>, JSON.toJSONString(person));</span><br><span class="line">    <span class="keyword">return</span> person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 流控处理方法</span></span><br><span class="line"><span class="keyword">public</span> Person <span class="title function_">handleException</span><span class="params">(String name, BlockException exception)</span> &#123;</span><br><span class="line"></span><br><span class="line">    log.warn(<span class="string">&quot;现在被流控了：[&#123;&#125;]&quot;</span>, JSON.toJSONString(exception));</span><br><span class="line">    <span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">    person.setAge(<span class="number">120</span>);</span><br><span class="line">    person.setName(<span class="string">&quot;i am &quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 异常处理方法</span></span><br><span class="line"><span class="keyword">public</span> Person <span class="title function_">handleFallback</span><span class="params">(String name, Throwable e)</span> &#123;</span><br><span class="line"></span><br><span class="line">    log.warn(<span class="string">&quot;资源anno抛异常：[&#123;&#125;]&quot;</span>, e.getMessage(), e);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-规则"><a href="#3-2-规则" class="headerlink" title="3.2 规则"></a>3.2 规则</h3><p>规则即是对资源的一种限定，比如对资源进行流量的规则限制(例如QPS限制，线程数限制)；或者进行访问控制的限定(例如黑白名单)等等</p>
+<p>Sentinel支持的规则包括<code>流量控制规则</code>、<code>熔断降级规则</code>、<code>系统保护规则</code>、<code>来源访问控制规则</code> 和 <code>热点参数规则</code></p>
+<p>在仅引入核心库的时候，操作步骤一般是：<code>定义规则</code>，<code>加载规则</code></p>
+<p>规则种类文档：<a href="https://github.com/alibaba/Sentinel/wiki/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8#%E8%A7%84%E5%88%99%E7%9A%84%E7%A7%8D%E7%B1%BB">https://github.com/alibaba/Sentinel/wiki/如何使用#规则的种类</a></p>
+<h4 id="3-2-1-流量控制规则-FlowRule"><a href="#3-2-1-流量控制规则-FlowRule" class="headerlink" title="3.2.1 流量控制规则 (FlowRule)"></a>3.2.1 流量控制规则 (FlowRule)</h4><p>由访问资源的流量引发的控制规则，监控应用流量的 QPS 或并发线程数等指标，当达到指定的阈值时对流量进行控制</p>
+<h4 id="3-2-2-熔断降级规则-DegradeRule"><a href="#3-2-2-熔断降级规则-DegradeRule" class="headerlink" title="3.2.2 熔断降级规则 (DegradeRule)"></a>3.2.2 熔断降级规则 (DegradeRule)</h4><p>从访问资源的<code>RT</code>和<code>异常</code>维度来进行控制，例如某资源的QPS很低，5分钟只有一个访问请求，但是RT非常高，此时即会触发熔断降级规则</p>
+<h4 id="3-2-3-系统保护规则-SystemRule"><a href="#3-2-3-系统保护规则-SystemRule" class="headerlink" title="3.2.3 系统保护规则 (SystemRule)"></a>3.2.3 系统保护规则 (SystemRule)</h4><p>系统保护规则是<code>应用</code>整体维度的，而不是<code>资源</code>维度的，并且仅对入口流量生效。入口流量指的是进入应用的流(<code>EntryType.IN</code>)，比如 Web 服务或 Dubbo 服务端接收的请求，都属于入口流量。</p>
+<p>系统规则支持四种阈值类型：</p>
+<ul>
+<li>Load（仅对 Linux&#x2F;Unix-like 机器生效）：当系统 load1 超过阈值，且系统当前的并发线程数超过系统容量时才会触发系统保护。系统容量由系统的 maxQps * minRt 计算得出。设定参考值一般是 CPU cores * 2.5。</li>
+<li>RT：当单台机器上所有入口流量的平均 RT 达到阈值即触发系统保护，单位是毫秒。</li>
+<li>线程数：当单台机器上所有入口流量的并发线程数达到阈值即触发系统保护。</li>
+<li>入口 QPS：当单台机器上所有入口流量的 QPS 达到阈值即触发系统保护。</li>
+</ul>
+<h4 id="3-2-4-访问控制规则-AuthorityRule"><a href="#3-2-4-访问控制规则-AuthorityRule" class="headerlink" title="3.2.4 访问控制规则 (AuthorityRule)"></a>3.2.4 访问控制规则 (AuthorityRule)</h4><p>又叫<code>黑白名单控制</code>。黑白名单根据资源的请求来源（origin）限制资源是否通过，若配置白名单则只有请求来源位于白名单内时才可通过；若配置黑名单则请求来源位于黑名单时不通过，其余的请求通过。</p>
+<blockquote>
+<p>调用方信息通过 ContextUtil.enter(resourceName, origin) 方法中的 origin 参数传入</p>
+</blockquote>
+<h4 id="3-2-5-热点规则-ParamFlowRule"><a href="#3-2-5-热点规则-ParamFlowRule" class="headerlink" title="3.2.5 热点规则 (ParamFlowRule)"></a>3.2.5 热点规则 (ParamFlowRule)</h4><p>热点参数限流是一种特殊的流量控制，仅对包含热点参数的<code>资源调用</code>生效。</p>
+<img src="http://qn.zwuyang.cn/热点参数限流图/no.watermark" alt="控制台1" width="542" height="252"/>
+
+<p>Sentinel 利用 LRU 统计最近最常访问的热点参数，结合令牌桶算法来进行参数级别的流控。</p>
+<h2 id="4-查询和更改规则"><a href="#4-查询和更改规则" class="headerlink" title="4 查询和更改规则"></a>4 查询和更改规则</h2><p>查询、更改规则，结合Sentinel的Dashboard会很方便。只通过核心包也可以完成查询、更改的目的，下面介绍通过核心库提供的接口如何查询、更改规则</p>
+<h3 id="4-1-查询规则"><a href="#4-1-查询规则" class="headerlink" title="4.1 查询规则"></a>4.1 查询规则</h3><blockquote>
+<p>curl <a href="http://localhost:8719/getRules?type=">http://localhost:8719/getRules?type=</a><XXXX></p>
+</blockquote>
+<p>type取值对应第3小节各种规则类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">FLOW_RULE_TYPE</span> <span class="operator">=</span> <span class="string">&quot;flow&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">DEGRADE_RULE_TYPE</span> <span class="operator">=</span> <span class="string">&quot;degrade&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">SYSTEM_RULE_TYPE</span> <span class="operator">=</span> <span class="string">&quot;system&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">AUTHORITY_RULE_TYPE</span> <span class="operator">=</span> <span class="string">&quot;authority&quot;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="4-2-更改规则"><a href="#4-2-更改规则" class="headerlink" title="4.2 更改规则"></a>4.2 更改规则</h3><blockquote>
+<p>curl <a href="http://localhost:8719/setRules?type=">http://localhost:8719/setRules?type=</a><XXXX>&amp;data&#x3D;<DATA></p>
+</blockquote>
+<p>其中data 则是对应的规则的JSON格式数据</p>
+<h3 id="4-3-注意点"><a href="#4-3-注意点" class="headerlink" title="4.3 注意点"></a>4.3 注意点</h3><p>这里的8719只是默认端口，程序会根据当前系统可用端口进行调节。</p>
+<p><code>com.alibaba.csp.sentinel.transport.command.SimpleHttpCommandCenter#getServerSocketFromBasePort</code></p>
+<p><img src="http://qn.zwuyang.cn/sentinel_port/no.watermark" alt="image"></p>
+<p>MAC平台可以使用 <code>jps -l</code> 先找到应用进程号，然后使用<code> lsof -nP -i | grep $&#123;pid&#125;</code>找到相应的端口号即可。</p>
+<p><strong>Sentinel官方介绍文档</strong>：<a href="https://github.com/alibaba/Sentinel/wiki/%E4%BB%8B%E7%BB%8D">https://github.com/alibaba/Sentinel/wiki/介绍</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/07/27/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E7%AE%80%E8%BF%B0/" data-id="cmceore4x002bcqbobwx5800b" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%80)/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Sentinel之——流量控制(一)
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/06/23/ARTS-%E7%AC%AC10%E5%91%A8/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">ARTS-第10周</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

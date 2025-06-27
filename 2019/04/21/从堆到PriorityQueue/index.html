@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>从堆到PriorityQueue | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1 前言堆是一颗完全二叉树，数据结构可用数组来表示，逻辑结构映射成数组，依据是：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从堆到PriorityQueue">
+<meta property="og:url" content="http://yoursite.com/2019/04/21/%E4%BB%8E%E5%A0%86%E5%88%B0PriorityQueue/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:description" content="1 前言堆是一颗完全二叉树，数据结构可用数组来表示，逻辑结构映射成数组，依据是：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://qn.zwuyang.cn/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%A0%86/picture.logo">
+<meta property="article:published_time" content="2019-04-21T13:38:47.000Z">
+<meta property="article:modified_time" content="2019-10-20T05:07:19.000Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="算法与数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qn.zwuyang.cn/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%A0%86/picture.logo">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-从堆到PriorityQueue" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            从堆到PriorityQueue
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/04/21/%E4%BB%8E%E5%A0%86%E5%88%B0PriorityQueue/">
+            <time datetime="2019-04-21T13:38:47.000Z" itemprop="datePublished">2019-04-21</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><i class="fas fa-angle-right"></i><a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">算法与数据结构</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%89%8D%E8%A8%80"><span class="toc-text">1 前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9E%84%E5%BB%BA%E5%A0%86"><span class="toc-text">2 构建堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A0%86%E6%8E%92%E5%BA%8F"><span class="toc-text">3 堆排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97PriorityQueue"><span class="toc-text">4 优先队列PriorityQueue</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%85%A5%E9%98%9F"><span class="toc-text">4.1 入队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%87%BA%E9%98%9F"><span class="toc-text">4.2 出队</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Top-N-%E9%97%AE%E9%A2%98"><span class="toc-text">5 Top N 问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">6 参考链接</span></a></li></ol>
+                </div>
+            
+            <h3 id="1-前言"><a href="#1-前言" class="headerlink" title="1 前言"></a>1 前言</h3><p>堆是一颗完全二叉树，数据结构可用数组来表示，逻辑结构映射成数组，依据是：</p>
+<span id="more"></span>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">大顶堆：arr[i] &gt;= arr[2i+1] &amp;&amp; arr[i] &gt;= arr[2i+2]  </span><br><span class="line"></span><br><span class="line">小顶堆：arr[i] &lt;= arr[2i+1] &amp;&amp; arr[i] &lt;= arr[2i+2]  </span><br></pre></td></tr></table></figure>
+
+<p>假设完全二叉树树顶(堆顶)元素为 a[0]， 则叶子节点的数组下标为 <code>$\dfrac&#123;arr.length&#125;&#123;2&#125;$</code> ~ <em>arr.length-1</em></p>
+<p>若当前节点为a[i]，则：</p>
+<ul>
+<li>左孩子是 a[2i+1]</li>
+<li>右孩子是 a[2i+2]</li>
+<li>父节点是 a[<code>$\dfrac&#123;i-1&#125;&#123;2&#125;$</code>]</li>
+</ul>
+<p>关于数组表示堆，很多书籍上介绍的堆顶元素是使用数组下标1 ，即是 a[1] 来表示，《算法 第4版》P209 ，有给出解释：++<em>将a[0]的值作为哨兵，在某些堆的应用中很有用</em>++；确实实际使用下来，在构建堆的时候，可以把当前元素的值存在a[0]中，而无需再新开辟一个 <code>int temp</code> 变量。不过本文是从a[0]来记录堆顶元素的，参考了JDK PriorityQueue 的设计。</p>
+<p>堆这种数据结构，可以用来做排序，可以用来解决Top N问题；不论用来做什么首先都需要<em>构建堆</em></p>
+<h3 id="2-构建堆"><a href="#2-构建堆" class="headerlink" title="2 构建堆"></a>2 构建堆</h3><ul>
+<li>大顶堆：父节点值<strong>大于等于</strong>左右孩子节点，堆顶元素为最大值</li>
+<li>小顶堆：父节点值<strong>小于等于</strong>左右孩子节点，堆顶元素为最小值</li>
+</ul>
+<p>图1 示例如下，圈内表示数组下标的值：<br><img src="http://qn.zwuyang.cn/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%A0%86/picture.logo" alt="堆排序-堆结构示例"></p>
+<p>构建堆的其实就是调整堆中的元素，使其满足上面堆的定义。只需要对<strong>非叶子结点</strong>作调整即可，调整顺序为从下往上，从右往左。</p>
+<p>表现在数组上就是从a[<code>$\dfrac&#123;arr.length&#125;&#123;2&#125;$</code>-1] 开始调整，每次调整数组下标减一，直到调整到a[0]。结合上图即是按顺序调整 a[3]、a[2]、a[1]、a[0]</p>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 构建大顶堆</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr 待调整数组</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] sortHeap(<span class="type">int</span>[] arr) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构建大顶堆 只对非叶子结点操作 并且是从下至上 从右至左</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=arr.length/<span class="number">2</span>-<span class="number">1</span>; i&gt;=<span class="number">0</span>; i--) &#123;</span><br><span class="line">        heapAdjust(arr, i, arr.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 调整大顶堆</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr 待调整数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> index 需要调整的数组下标</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> length 数组长度</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">heapAdjust</span><span class="params">(<span class="type">int</span>[] arr, <span class="type">int</span> index, <span class="type">int</span> length)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取出当前元素</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">temp</span> <span class="operator">=</span> arr[index];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 坐孩子下标为 2*index+1</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>*index+<span class="number">1</span>; i&lt;length; i=<span class="number">2</span>*i+<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// &lt;1&gt; 判断左右孩子的大小</span></span><br><span class="line">        <span class="keyword">if</span> (i+<span class="number">1</span>&lt;length &amp;&amp; arr[i]&lt;arr[i+<span class="number">1</span>]) &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// &lt;2&gt; 孩子比父节点大</span></span><br><span class="line">        <span class="keyword">if</span> (arr[i] &gt; arr[index]) &#123;</span><br><span class="line">            arr[index] = arr[i];</span><br><span class="line">            <span class="comment">// 为了实现父节点值与孩子节点进行交换 </span></span><br><span class="line">            <span class="comment">// 用index来记录下被交换掉的孩子节点的数组下标</span></span><br><span class="line">            index = i;</span><br><span class="line">        <span class="comment">// &lt;3&gt;    </span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 被调整的父节点的值赋值给被交换的孩子结点  完成交换</span></span><br><span class="line">        arr[index] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要构建小顶堆，改动两处：</p>
+<ul>
+<li>&lt;1&gt; 处的 <code>arr[i] &lt; arr[i+1]</code> 改为 <code>arr[i] &gt; arr[i+1]</code></li>
+<li>&lt;2&gt; 处的 <code>arr[i] &gt; arr[index]</code> 改为 <code>arr[i] &lt; arr[index]</code></li>
+</ul>
+<p>&lt;3&gt; 处的使用<code>break</code>，原因为我们是从最后一个父节点顺序往上调整的，所以我们只需要管当前被调整的父节点即可，无需管更下面的父节点(因为已经被调整了)，所以更下面的父节点一定是满足堆的定义的，所以可以跳出循环。结合上面图1就是说在调整a[1]的时候是不用管a[3]的，因为此时 a[3] 必定是已经调整过的。</p>
+<p>从另一个角度来看，假设调整a[0]时，如果没有走到break语句块，则说明a[0]和a[1]进行了交换；然后会继续循环，判断是否a[3]会大于a[1]…以此类推，直至某一处的孩子结点小于父节点</p>
+<p>其实过程还是比较好理解，就是一个for循环处理所有的非叶子结点，调整每一个非叶子结点的值，调整结束以后大顶堆就构建成了。</p>
+<h3 id="3-堆排序"><a href="#3-堆排序" class="headerlink" title="3 堆排序"></a>3 堆排序</h3><p>堆排序建立在堆已经构建的基础上，一般升序排序，使用大顶堆，原理就是最大的值(堆顶元素)循环放在数组最后：将堆顶的元素和堆尾的元素交换，然后调整堆顶元素。</p>
+<p>代码上其实就是在构建堆的for循环下面再加一个for循环，把堆顶元素和堆尾元素(a[arr.length-1])进行交换，堆尾元素下标减一，然后调整堆顶；然后再将把堆顶元素和堆尾元素(a[arr.length-2])进行交换…依次类推</p>
+<p>代码如下，其实就是在上面<code>sortHeap(int[] arr) </code>方法中加上一端for循环即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span>[] sortHeap(<span class="type">int</span>[] arr) &#123;</span><br><span class="line">    <span class="comment">// 构建大顶堆 只对父节点操作 并且是从下至上 从右至左</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=arr.length&gt;&gt;&gt;<span class="number">2</span>-<span class="number">1</span>; i&gt;=<span class="number">0</span>; i--) &#123;</span><br><span class="line">        heapAdjust(arr, i, arr.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 开始排序 把根节点和最后一个节点互换 然后对互换之后的堆进行重新建堆 仅调整堆顶元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=arr.length-<span class="number">1</span>; i&gt;<span class="number">0</span>; i--) &#123;</span><br><span class="line">        swap(arr, <span class="number">0</span>, i);</span><br><span class="line">        <span class="comment">// 为什么这里只调整根节点 是因为其余节点已经在之前调整过，只有根节点换了值</span></span><br><span class="line">        <span class="comment">// 所以只有根节点可能是不满足堆的要求 故只调整根节点即可</span></span><br><span class="line">        heapAdjust(arr, <span class="number">0</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 交换元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> a 数组下标a</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> b 数组下标b</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span> []arr, <span class="type">int</span> a ,<span class="type">int</span> b)</span>&#123;</span><br><span class="line">    <span class="type">int</span> temp=arr[a];</span><br><span class="line">    arr[a] = arr[b];</span><br><span class="line">    arr[b] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用了数组本身来进行排序，没有使用额外的空间，堆排序的辅助空间是<em>O(1)</em>；当然从程序中还是可以看到每次swap的时候会需要定义一个临时变量temp，我们当然也可以使用下面的方法来追求一下性能，下面的<code>swap</code>不仅更省空间，而且更快，原因是异或运算是最低级的CPU运算，它的效率是极高的；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 交换元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> a 下标a</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> b 下标b</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span> []arr, <span class="type">int</span> a ,<span class="type">int</span> b)</span>&#123;</span><br><span class="line"></span><br><span class="line">    arr[a] = arr[a] ^ arr[b];</span><br><span class="line">    arr[b] = arr[a] ^ arr[b];</span><br><span class="line">    arr[a] = arr[a] ^ arr[b];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-优先队列PriorityQueue"><a href="#4-优先队列PriorityQueue" class="headerlink" title="4 优先队列PriorityQueue"></a>4 优先队列PriorityQueue</h3><p><code>PriorityQueue</code>使用一个Object数组来存放元素，<code>PriorityQueue</code>中的元素必须实现<code>Comparator</code>或者，在构造函数中传递指定的<code>Comparator</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">transient</span> Object[] queue; <span class="comment">// non-private to simplify nested class access</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 几个常用的构造函数</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">PriorityQueue</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>(DEFAULT_INITIAL_CAPACITY, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">PriorityQueue</span><span class="params">(<span class="type">int</span> initialCapacity)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>(initialCapacity, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">PriorityQueue</span><span class="params">(<span class="type">int</span> initialCapacity,</span></span><br><span class="line"><span class="params">                     Comparator&lt;? <span class="built_in">super</span> E&gt; comparator)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>();</span><br><span class="line">    <span class="built_in">this</span>.queue = <span class="keyword">new</span> <span class="title class_">Object</span>[initialCapacity];</span><br><span class="line">    <span class="built_in">this</span>.comparator = comparator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>PriorityQueue</code>的关键就在于，不论是出队还是入队(还包括删除<code>remove</code>操作)，都必须将堆调整为小顶堆。</strong></p>
+<h4 id="4-1-入队"><a href="#4-1-入队" class="headerlink" title="4.1 入队"></a>4.1 入队</h4><p><code>PriorityQueue</code>内部维护一个小顶堆，每次从队列中取到的都是队列中最小的元素。工作原理就是始终维护小顶堆即可，入队时，把元素放到队尾(也即堆尾)，然后调整堆使其满足小顶堆，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">offer</span><span class="params">(E e)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (e == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> size;</span><br><span class="line">    <span class="keyword">if</span> (i &gt;= queue.length)</span><br><span class="line">        grow(i + <span class="number">1</span>);</span><br><span class="line">    size = i + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 第一个元素直接入队</span></span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">0</span>)</span><br><span class="line">        queue[<span class="number">0</span>] = e;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    <span class="comment">// 关键看下这个方法</span></span><br><span class="line">        siftUp(i, e);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">siftUp</span><span class="params">(<span class="type">int</span> k, E x)</span> &#123;</span><br><span class="line">    <span class="comment">// 如果指定了比较器 在构造函数的时候传入</span></span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="literal">null</span>)</span><br><span class="line">        siftUpUsingComparator(k, x);</span><br><span class="line">    <span class="comment">// 没有显示传入比较器 则使用入队的元素 实现的比较器    </span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpComparable(k, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>入队的核心代码<code>siftUpComparable(k, x)</code>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// key是队尾下标 插入的元素都放到堆尾</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">siftUpComparable</span><span class="params">(<span class="type">int</span> k, E x)</span> &#123;</span><br><span class="line">    <span class="comment">// 需要入队的元素 key</span></span><br><span class="line">    Comparable&lt;? <span class="built_in">super</span> E&gt; key = (Comparable&lt;? <span class="built_in">super</span> E&gt;) x;</span><br><span class="line">    <span class="keyword">while</span> (k &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 堆尾元素的父节点下标</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">parent</span> <span class="operator">=</span> (k - <span class="number">1</span>) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 堆尾元素的父节点元素值</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">e</span> <span class="operator">=</span> queue[parent];</span><br><span class="line">        <span class="comment">// 如果新插入的元素比父节点元素大 那么结束循环 无需调整 满足小顶堆</span></span><br><span class="line">        <span class="keyword">if</span> (key.compareTo((E) e) &gt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 父节点元素放到堆尾</span></span><br><span class="line">        queue[k] = e;</span><br><span class="line">        <span class="comment">// 父节点下标视为堆尾 继续向上调整</span></span><br><span class="line">        k = parent;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="comment">// 存入当前插入的元素到合适的位置 k</span></span><br><span class="line">    queue[k] = key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码可以保证每次入队都能调整整个堆为小顶堆，保证队头元素为最小值</p>
+<h4 id="4-2-出队"><a href="#4-2-出队" class="headerlink" title="4.2 出队"></a>4.2 出队</h4><p>下面再看看出队列，出队是一样的道理，从队列头删除元素，然后将堆尾的元素放到堆头，然后对堆头进行调整，使其满足小顶堆即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">poll</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 空队列返回null</span></span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 尾元素数组下标</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> --size;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// 获取尾元素最为返回值</span></span><br><span class="line">    <span class="type">E</span> <span class="variable">result</span> <span class="operator">=</span> (E) queue[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">// 拿出尾元素的值</span></span><br><span class="line">    <span class="type">E</span> <span class="variable">x</span> <span class="operator">=</span> (E) queue[s];</span><br><span class="line">    <span class="comment">// 显示将尾元素置为null</span></span><br><span class="line">    queue[s] = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 队列元素大于1时 调整堆为小顶堆</span></span><br><span class="line">    <span class="keyword">if</span> (s != <span class="number">0</span>)</span><br><span class="line">        siftDown(<span class="number">0</span>, x);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样看下出队时调整小顶堆的关键代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">siftDown</span><span class="params">(<span class="type">int</span> k, E x)</span> &#123;</span><br><span class="line">    <span class="comment">// 区分一下有无显示传递比较器</span></span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="literal">null</span>)</span><br><span class="line">        siftDownUsingComparator(k, x);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftDownComparable(k, x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 出队时调整小顶堆的核心代码</span></span><br><span class="line"><span class="comment">// k初始为0 表示首元素  x 为尾元素的值</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">siftDownComparable</span><span class="params">(<span class="type">int</span> k, E x)</span> &#123;</span><br><span class="line">    Comparable&lt;? <span class="built_in">super</span> E&gt; key = (Comparable&lt;? <span class="built_in">super</span> E&gt;)x;</span><br><span class="line">    <span class="type">int</span> <span class="variable">half</span> <span class="operator">=</span> size &gt;&gt;&gt; <span class="number">1</span>;        </span><br><span class="line">    <span class="keyword">while</span> (k &lt; half) &#123;</span><br><span class="line">        <span class="comment">// 左孩子下标</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">child</span> <span class="operator">=</span> (k &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>; </span><br><span class="line">        <span class="type">Object</span> <span class="variable">c</span> <span class="operator">=</span> queue[child];</span><br><span class="line">        <span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> child + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 假设有右孩子 且右孩子小于左孩子 则把下标指向右孩子</span></span><br><span class="line">        <span class="keyword">if</span> (right &lt; size &amp;&amp;</span><br><span class="line">            ((Comparable&lt;? <span class="built_in">super</span> E&gt;) c).compareTo((E) queue[right]) &gt; <span class="number">0</span>)</span><br><span class="line">            c = queue[child = right];</span><br><span class="line">        <span class="comment">// 如果尾元素 x 的值比孩子节点小 则跳出循环 把尾元素插入到根节点(作为首元素)</span></span><br><span class="line">        <span class="keyword">if</span> (key.compareTo((E) c) &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 说明孩子节点比尾元素 x 小，所以要把较小的孩子节点(可能是左孩子，也可能是右孩子)赋值给父节点</span></span><br><span class="line">        <span class="comment">// 当第一次循环的时候 父节点就是根节点</span></span><br><span class="line">        queue[k] = c;</span><br><span class="line">        <span class="comment">// 孩子节点作为新的父节点进行循环</span></span><br><span class="line">        k = child;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 把尾元素插入到合适的位置 堆调整为小顶堆</span></span><br><span class="line">    queue[k] = key;</span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure>
+
+<p>相信有上面堆的基础知识，再看<code>PriorityQueue</code>的代码是很容易懂的，也应该会对堆这种数据结构有更深的认识。对于<strong>构建堆</strong>和<strong>堆排序</strong>二者的关系应该也顺了一些</p>
+<p>那么<code>PriorityQueue</code>中有用到排序算法吗？答案当然是没有，所以说优先队列并不涉及到排序，因为不需要，只要保证队列中最小值或最大值在队首即可。</p>
+<p>我们看堆排序和快速排序的对比表格</p>
+<table>
+<thead>
+<tr>
+<th>排序方法</th>
+<th>最好情况</th>
+<th>最坏情况</th>
+<th>辅助空间</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>堆排序</td>
+<td><em>O(nlog<sup>n</sup>)</em></td>
+<td><em>O(nlog<sup>n</sup>)</em></td>
+<td><em>O(1)</em></td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td><em>O(nlog<sup>n</sup>)</em></td>
+<td><em>O(n<sup>2</sup>)</em></td>
+<td><em>O(n)</em></td>
+</tr>
+</tbody></table>
+<p>堆排序的各项指标都优于快速排序，为什么工程中的排序算法优先选用快速排序而不是堆排序呢？</p>
+<p>原因是堆排序无法充分利用CPU缓存，因为我们可以看到堆这种数据结构映射成数组以后，它所需要的值是跳着存储在数组中的，比如说我需要数组下标为 i 的左孩子，那就需要去查数组下标为 2i+1 的值，那么很可能这两个数据不在一个CPU的缓存行内，就导致无法利用缓存来提高速度。</p>
+<h3 id="5-Top-N-问题"><a href="#5-Top-N-问题" class="headerlink" title="5 Top N 问题"></a>5 Top N 问题</h3><p>相信Top N问题都很熟悉了，这里结合一道LeetCode的题目来说吧，利用<code>PriorityQueue</code>可以非常轻松的解决top n </p>
+<p>LeetCode 第703题. Kth Largest Element in a Stream 数据流中第K大元素</p>
+<p>给定初始数组，并且会不停来新的数据，最终要能够输出第K大的值，同时Top K的值也已经保存了下来</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">KthLargest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> PriorityQueue&lt;Integer&gt; pq;</span><br><span class="line">    <span class="type">int</span> size=<span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">KthLargest</span><span class="params">(<span class="type">int</span> k, <span class="type">int</span>[] nums)</span> &#123;</span><br><span class="line">        size = k;</span><br><span class="line">        pq = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;(k);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> num : nums) &#123;</span><br><span class="line">            <span class="built_in">this</span>.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> val)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (pq.size() &lt; size) &#123;</span><br><span class="line">            pq.offer(val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (val &gt; pq.peek()) &#123;</span><br><span class="line">            pq.poll();</span><br><span class="line">            pq.offer(val);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pq.peek();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] nums = &#123;<span class="number">6</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">7</span>&#125;;</span><br><span class="line">        <span class="type">KthLargest</span> <span class="variable">kthLargest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KthLargest</span>(<span class="number">2</span>, nums);</span><br><span class="line">        kthLargest.add(<span class="number">12</span>);</span><br><span class="line">        kthLargest.add(<span class="number">10</span>);</span><br><span class="line">        ....</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每添加一个数据，就会返回当前的第K大数，同时top k的数据也已经保存在<code>pq</code>队列中了。</p>
+<h3 id="6-参考链接"><a href="#6-参考链接" class="headerlink" title="6 参考链接"></a>6 参考链接</h3><p><a href="https://www.cnblogs.com/chengxiao/p/6129630.html">https://www.cnblogs.com/chengxiao/p/6129630.html</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/04/21/%E4%BB%8E%E5%A0%86%E5%88%B0PriorityQueue/" data-id="cmceore4z002qcqbo95m49w1o" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/04/21/ARTS-%E7%AC%AC3%E5%91%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    ARTS-第3周
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/04/13/ARTS-%E7%AC%AC2%E5%91%A8/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">ARTS-第2周</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

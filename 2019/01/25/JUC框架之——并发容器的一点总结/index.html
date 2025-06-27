@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>JUC框架之——并发容器的一点总结 | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="除了ConcurrentHashMap，JUC还有很多有意思的并发容器~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JUC框架之——并发容器的一点总结">
+<meta property="og:url" content="http://yoursite.com/2019/01/25/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:description" content="除了ConcurrentHashMap，JUC还有很多有意思的并发容器~">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-25T14:46:08.000Z">
+<meta property="article:modified_time" content="2019-10-20T05:07:19.000Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="JUC">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-JUC框架之——并发容器的一点总结" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            JUC框架之——并发容器的一点总结
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/01/25/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/">
+            <time datetime="2019-01-25T14:46:08.000Z" itemprop="datePublished">2019-01-25</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/JUC/">JUC</a><i class="fas fa-angle-right"></i><a class="article-category-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/JUC/" rel="tag">JUC</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%8E%E9%9D%9E%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E5%AF%B9%E6%AF%94%E6%A6%82%E8%A7%88"><span class="toc-text">1 与非并发容器对比概览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E4%BD%BF%E7%94%A8%E7%AE%80%E8%BF%B0"><span class="toc-text">2 并发容器使用简述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-CopyOnWriteArrayList"><span class="toc-text">2.1 CopyOnWriteArrayList</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-add-%E6%96%B9%E6%B3%95"><span class="toc-text">2.1.1 add 方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-text">2.1.2 使用场景和优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-CopyOnWriteArraySet"><span class="toc-text">2.2 CopyOnWriteArraySet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-ConcurrentHashMap"><span class="toc-text">2.3 ConcurrentHashMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-ConcurrentSkipListMap"><span class="toc-text">2.4 ConcurrentSkipListMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-ConcurrentSkipListMap"><span class="toc-text">2.5 ConcurrentSkipListMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-ConcurrentLinkedQueue"><span class="toc-text">2.6 ConcurrentLinkedQueue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">3 参考链接</span></a></li></ol>
+                </div>
+            
+            <p>除了ConcurrentHashMap，JUC还有很多有意思的并发容器~</p>
+<span id="more"></span>
+
+<h2 id="1-与非并发容器对比概览"><a href="#1-与非并发容器对比概览" class="headerlink" title="1 与非并发容器对比概览"></a>1 与非并发容器对比概览</h2><p><code>CopyOnWriteArrayList</code></p>
+<ul>
+<li>对应的非并发容器 - <code>ArrayList</code></li>
+<li>替代 <code>Vector</code>, <code>synchronizedList</code></li>
+</ul>
+<hr>
+<p><code>CopyOnWriteArraySet</code></p>
+<ul>
+<li>对应的非并发容器 - <code>HashSet </code></li>
+<li>替代 <code>synchronizedSet </code></li>
+</ul>
+<p>CopyOnWrite(COW) 容器采用读写分离的思想，读旧容器，写新容器</p>
+<hr>
+<p><code>ConcurrentHashMap</code></p>
+<ul>
+<li>对应的非并发容器 - <code>HashMap</code></li>
+<li>替代 <code>Hashtable</code>,<code>synchronizedMap</code></li>
+</ul>
+<hr>
+<p><code>ConcurrentSkipListMap</code></p>
+<ul>
+<li>对应的非并发容器 - <code>TreeMap</code></li>
+<li>替代<code>synchronizedSortedMap</code></li>
+</ul>
+<hr>
+<p><code>ConcurrentSkipListSet</code></p>
+<ul>
+<li>对应的非并发容器 - TreeSet</li>
+<li>替代<code>synchronizedSortedSet </code></li>
+</ul>
+<hr>
+<p><code>ConcurrentLinkedQueue</code></p>
+<ul>
+<li>对应的非并发容器 - Queue</li>
+</ul>
+<p>非并发容器的加锁版本，使用Collections.synchronized方法生成，例如： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Collectinons.synchronizedList()</span><br><span class="line">Collections.synchronizedSet()</span><br><span class="line">Collections.synchronizedMap()</span><br><span class="line">Collections.synchronizedSortedSet()</span><br><span class="line">Collections.synchronizedSortedMap()</span><br></pre></td></tr></table></figure>
+<p>实现原理是在通用方法前面加上<code>synchronized </code>关键字  </p>
+<h2 id="2-并发容器使用简述"><a href="#2-并发容器使用简述" class="headerlink" title="2 并发容器使用简述"></a>2 并发容器使用简述</h2><p>这里更多的是从使用层面去简述并发容器，没有更多的深入代码实现。</p>
+<h3 id="2-1-CopyOnWriteArrayList"><a href="#2-1-CopyOnWriteArrayList" class="headerlink" title="2.1 CopyOnWriteArrayList"></a>2.1 CopyOnWriteArrayList</h3><ol>
+<li>线程安全的，可以满足多线程访问</li>
+<li>一个线程在遍历(foreach)时，另一个线程可以往该list插入数据，而不会抛出<code>ConcurrentModificationException</code>异常</li>
+<li>CopyOnWrite的意思是写时拷贝，表示的是往list中使用可变操作(<code>add</code>,<code>remove</code>)时，会拷贝(<code>Arrays.copyOf</code>)一份原来数组的数据，执行完<code>add</code>,<code>remove</code>操作之后，更新数组的引用(更新<code>volatile Object[] array</code>)</li>
+</ol>
+<h4 id="2-1-1-add-方法"><a href="#2-1-1-add-方法" class="headerlink" title="2.1.1 add 方法"></a>2.1.1 add 方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(E e)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">        <span class="comment">// 对add操作加锁</span></span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">        	  <span class="comment">// 获取原始数据(数组)</span></span><br><span class="line">            Object[] elements = getArray();</span><br><span class="line">            <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> elements.length;</span><br><span class="line">            <span class="comment">// 拷贝新数组</span></span><br><span class="line">            Object[] newElements = Arrays.copyOf(elements, len + <span class="number">1</span>);</span><br><span class="line">            <span class="comment">// 把要添加的数据放到数组末尾</span></span><br><span class="line">            newElements[len] = e;</span><br><span class="line">            <span class="comment">// 更新数组引用 volatile Object[] array = newElements</span></span><br><span class="line">            setArray(newElements);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<h4 id="2-1-2-使用场景和优缺点"><a href="#2-1-2-使用场景和优缺点" class="headerlink" title="2.1.2 使用场景和优缺点"></a>2.1.2 使用场景和优缺点</h4><ol>
+<li>读多写少，因为写会引起数组拷贝</li>
+<li>集合不大，原因还是写时拷贝的问题</li>
+<li>遍历的时候，可能有另外线程对集合进行操作</li>
+<li><code>CopyOnWriteArrayList </code>只能保证最终一致性，不能保证实时一致性，在写操作的时候，已经在往list中写数据，拷贝新数组了，这时读取list时有可能读到老数组的内容</li>
+</ol>
+<h3 id="2-2-CopyOnWriteArraySet"><a href="#2-2-CopyOnWriteArraySet" class="headerlink" title="2.2 CopyOnWriteArraySet"></a>2.2 CopyOnWriteArraySet</h3><p><code>CopyOnWriteArraySet </code>采用的是动态数组(<code>CopyOnWriteArrayList </code>)实现的，而<code>HashSet</code>是采用散列表(<code>HashMap</code>)实现的。</p>
+<p>通过构造函数看出，<code>CopyOnWriteArraySet </code>是利用<code>CopyOnWriteArrayList </code>来实现线程安全的操作，并且实现<code>Copy-On-Write</code>的语义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> CopyOnWriteArrayList&lt;E&gt; al;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates an empty set.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">CopyOnWriteArraySet</span><span class="params">()</span> &#123;</span><br><span class="line">    al = <span class="keyword">new</span> <span class="title class_">CopyOnWriteArrayList</span>&lt;E&gt;();</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<p>那么如何保证<code>CopyOnWriteArraySet </code>中的数据仅有一份(去重)呢？看<code>add(E e)</code>方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(E e)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> al.addIfAbsent(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>CopyOnWriteArrayList</code>类中的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">addIfAbsent</span><span class="params">(E e)</span> &#123;</span><br><span class="line">    Object[] snapshot = getArray();</span><br><span class="line">    <span class="comment">// 数组中不存在该元素，才添加</span></span><br><span class="line">    <span class="keyword">return</span> indexOf(e, snapshot, <span class="number">0</span>, snapshot.length) &gt;= <span class="number">0</span> ? <span class="literal">false</span> :</span><br><span class="line">        addIfAbsent(e, snapshot);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>addIfAbsent(e, snapshot) </code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">addIfAbsent</span><span class="params">(E e, Object[] snapshot)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Object[] current = getArray();</span><br><span class="line">            <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> current.length;</span><br><span class="line">            <span class="comment">// 和CopyOnWriteArrayList#add(int, E)相比，多了if体</span></span><br><span class="line">            <span class="keyword">if</span> (snapshot != current) &#123;</span><br><span class="line">                <span class="comment">// Optimize for lost race to another addXXX operation</span></span><br><span class="line">                <span class="type">int</span> <span class="variable">common</span> <span class="operator">=</span> Math.min(snapshot.length, len);</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; common; i++)</span><br><span class="line">                    <span class="keyword">if</span> (current[i] != snapshot[i] &amp;&amp; eq(e, current[i]))</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                <span class="keyword">if</span> (indexOf(e, current, common, len) &gt;= <span class="number">0</span>)</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Object[] newElements = Arrays.copyOf(current, len + <span class="number">1</span>);</span><br><span class="line">            newElements[len] = e;</span><br><span class="line">            setArray(newElements);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面if语句体内的代码，要解决的问题是，如果在当前线程添加元素<code>e</code>时，有另外的线程对<code>list</code>做了修改，则判断新数组中是否已经存在元素<code>e</code>，没有则添加，有则返回<code>false</code></p>
+<p>其余操作与<code>CopyOnWriteArrayList </code>类似</p>
+<h3 id="2-3-ConcurrentHashMap"><a href="#2-3-ConcurrentHashMap" class="headerlink" title="2.3 ConcurrentHashMap"></a>2.3 ConcurrentHashMap</h3><p>关于<code>ConcurrentHashMap</code>的分析文章很多，一级JDK 1.7 和 1.8 的区别也有很多巨多文章分析，这里不再赘述。</p>
+<p>总结起来个人认为可以<strong>完全用来替换HashMap</strong>，1.8版本中使用CAS+Synchronized来保证并发更新的安全，底层采用数组+链表+红黑树的存储结构</p>
+<h3 id="2-4-ConcurrentSkipListMap"><a href="#2-4-ConcurrentSkipListMap" class="headerlink" title="2.4 ConcurrentSkipListMap"></a>2.4 ConcurrentSkipListMap</h3><p>用法和<code>TreeMap</code>基本一致，核心要解决的问题就是线程安全。</p>
+<p>适用于并发场景，TreeMap非线程安全<br>另外<code>ConcurrentSkipListMap</code>底层数据结构是跳表，<code>TreeMap</code>是红黑树</p>
+<h3 id="2-5-ConcurrentSkipListMap"><a href="#2-5-ConcurrentSkipListMap" class="headerlink" title="2.5 ConcurrentSkipListMap"></a>2.5 ConcurrentSkipListMap</h3><p>同上，用法和<code>TreeSet </code>基本一致，核心要解决的问题也是线程安全。</p>
+<ol>
+<li>线程安全，适用于高并发；<code>TreeSet </code>非线程安全</li>
+<li><code>ConcurrentSkipListSet </code>通过<code>ConcurrentSkipListMap</code>实现，<code>TreeSet </code>是通过<code>TreeMap</code>实现的</li>
+</ol>
+<p><code>ConcurrentSkipListSet </code>的方法基本上都是通过<code>ConcurrentSkipListMap</code>的方法实现的。</p>
+<h3 id="2-6-ConcurrentLinkedQueue"><a href="#2-6-ConcurrentLinkedQueue" class="headerlink" title="2.6 ConcurrentLinkedQueue"></a>2.6 ConcurrentLinkedQueue</h3><p>这个队列不是要解决线程安全性的问题，而是实现线程安全的Queue的另一种方式，非阻塞的无锁模式。<code>LinkedTransferQueue</code>也是采用的无锁模式，但是<code>ConcurrentLinkedQueue </code>没有阻塞取值的方法(<code>take()</code>)</p>
+<ol>
+<li>基于链接节点的无界线程安全队列，按照 FIFO（先进先出）原则对元素进行排序</li>
+<li>线程安全的队列，适用于“高并发”的场景</li>
+</ol>
+<h2 id="3-参考链接"><a href="#3-参考链接" class="headerlink" title="3 参考链接"></a>3 参考链接</h2><p><a href="http://www.cnblogs.com/skywang12345/p/3498995.html">http://www.cnblogs.com/skywang12345/p/3498995.html</a><br><a href="http://www.cnblogs.com/skywang12345/p/3498634.html">http://www.cnblogs.com/skywang12345/p/3498634.html</a><br><a href="https://my.oschina.net/jielucky/blog/167198">https://my.oschina.net/jielucky/blog/167198</a><br><a href="http://ifeve.com/java-copy-on-write/">http://ifeve.com/java-copy-on-write/</a><br><a href="https://blog.csdn.net/linsongbin1/article/details/54581787">https://blog.csdn.net/linsongbin1/article/details/54581787</a><br><a href="http://www.cnblogs.com/skywang12345/p/3498497.html">http://www.cnblogs.com/skywang12345/p/3498497.html</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/01/25/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E5%B9%B6%E5%8F%91%E5%AE%B9%E5%99%A8%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/" data-id="cmceore4v001ocqbodyqidcw0" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/01/27/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E5%90%8C%E6%AD%A5%E5%B7%A5%E5%85%B7%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    JUC框架之——同步工具的一点总结
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">JUC框架之——阻塞队列的一点总结</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

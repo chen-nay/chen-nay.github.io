@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>ARTS-第3周 | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1 Algorithm 242&#x2F;9222 Review 微基准测试框架JMH3 Tip 使用lombok简洁Java开发4 Share 警惕掉入纯粹的时间换金钱的陷阱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARTS-第3周">
+<meta property="og:url" content="http://yoursite.com/2019/04/21/ARTS-%E7%AC%AC3%E5%91%A8/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:description" content="1 Algorithm 242&#x2F;9222 Review 微基准测试框架JMH3 Tip 使用lombok简洁Java开发4 Share 警惕掉入纯粹的时间换金钱的陷阱">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-04-21T14:52:35.000Z">
+<meta property="article:modified_time" content="2019-10-20T05:07:19.000Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="ARTS">
+<meta name="twitter:card" content="summary">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-ARTS-第3周" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            ARTS-第3周
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/04/21/ARTS-%E7%AC%AC3%E5%91%A8/">
+            <time datetime="2019-04-21T14:52:35.000Z" itemprop="datePublished">2019-04-21</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/ARTS/">ARTS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/ARTS/" rel="tag">ARTS</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Algorithm-242-922"><span class="toc-text">1 Algorithm 242&#x2F;922</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Review-%E5%BE%AE%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6JMH"><span class="toc-text">2 Review 微基准测试框架JMH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Tip-%E4%BD%BF%E7%94%A8lombok%E7%AE%80%E6%B4%81Java%E5%BC%80%E5%8F%91"><span class="toc-text">3 Tip 使用lombok简洁Java开发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Share-%E8%AD%A6%E6%83%95%E6%8E%89%E5%85%A5%E7%BA%AF%E7%B2%B9%E7%9A%84%E6%97%B6%E9%97%B4%E6%8D%A2%E9%87%91%E9%92%B1%E7%9A%84%E9%99%B7%E9%98%B1"><span class="toc-text">4 Share 警惕掉入纯粹的时间换金钱的陷阱</span></a></li></ol>
+                </div>
+            
+            <p>1 Algorithm 242&#x2F;922<br>2 Review 微基准测试框架JMH<br>3 Tip 使用lombok简洁Java开发<br>4 Share 警惕掉入纯粹的时间换金钱的陷阱</p>
+<span id="more"></span>
+
+<blockquote>
+<p>极客时间《左耳听风》发起的ARTS挑战怎么参加？<br><a href="https://www.zhihu.com/question/301150832">https://www.zhihu.com/question/301150832</a></p>
+</blockquote>
+<h3 id="1-Algorithm-242-922"><a href="#1-Algorithm-242-922" class="headerlink" title="1 Algorithm 242&#x2F;922"></a>1 Algorithm 242&#x2F;922</h3><p>简单-排序 </p>
+<p><strong>242. Valid Anagram 校验同字母异序词</strong></p>
+<p>Example 1:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: s = &quot;anagram&quot;, t = &quot;nagaram&quot;</span><br><span class="line">Output: true</span><br></pre></td></tr></table></figure>
+
+<p>Example 2:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: s = &quot;rat&quot;, t = &quot;car&quot;</span><br><span class="line">Output: false</span><br></pre></td></tr></table></figure>
+<p>Note:</p>
+<ul>
+<li>You may assume the string contains only lowercase alphabets.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isAnagram</span><span class="params">(String s, String t)</span> &#123;</span><br><span class="line">        <span class="type">char</span>[] s1 = s.toCharArray();</span><br><span class="line">        <span class="type">char</span>[] t1 = t.toCharArray();</span><br><span class="line">        </span><br><span class="line">        Arrays.sort(s1);</span><br><span class="line">        Arrays.sort(t1);</span><br><span class="line">        </span><br><span class="line">        s = <span class="keyword">new</span> <span class="title class_">String</span>(s1);</span><br><span class="line">        t = <span class="keyword">new</span> <span class="title class_">String</span>(t1);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> s.equals(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一题乍一看没有思路，但是仔细一想，其实就是排序问题，不论原来单词怎么打乱顺序成为新的单词，只要按照字典序排序之后就一定是一样的。</p>
+<p><strong>922. Sort Array By Parity II 均衡排序数组2</strong></p>
+<p>Given an array A of non-negative integers, half of the integers in A are odd, and half of the integers are even.</p>
+<p>Sort the array so that whenever A[i] is odd, i is odd; and whenever A[i] is even, i is even.</p>
+<p>You may return any answer array that satisfies this condition.</p>
+<p>Example 1:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [4,2,5,7]</span><br><span class="line">Output: [4,5,2,7]</span><br><span class="line">Explanation: [4,7,2,5], [2,5,4,7], [2,7,4,5] would also have been accepted.</span><br></pre></td></tr></table></figure>
+
+<p>Note:</p>
+<ul>
+<li>2 &lt;&#x3D; A.length &lt;&#x3D; 20000</li>
+<li>A.length % 2 &#x3D;&#x3D; 0</li>
+<li>0 &lt;&#x3D; A[i] &lt;&#x3D; 1000</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] sortArrayByParityII(<span class="type">int</span>[] A) &#123;</span><br><span class="line">		<span class="type">int</span>[] odd = <span class="keyword">new</span> <span class="title class_">int</span>[A.length/<span class="number">2</span>];</span><br><span class="line">		<span class="type">int</span>[] even = <span class="keyword">new</span> <span class="title class_">int</span>[A.length/<span class="number">2</span>];</span><br><span class="line">		<span class="type">int</span> <span class="variable">o</span> <span class="operator">=</span> <span class="number">0</span>, e = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> a : A) &#123;</span><br><span class="line">			<span class="keyword">if</span> (a%<span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">				even[e++] = a;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				odd[o++] = a;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		o = <span class="number">0</span>;</span><br><span class="line">		e = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i&lt;A.length; i+=<span class="number">2</span>) &#123;</span><br><span class="line">			A[i] = even[e++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i&lt;A.length; i+=<span class="number">2</span>) &#123;</span><br><span class="line">			A[i] = odd[o++];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> A;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>本来以为实现的很挫，没想到一提交，表现还可以，6ms，击败86%。一开始用下面的for循环来组装结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i&lt;A.length; i++) &#123;</span><br><span class="line">	<span class="keyword">if</span> (i%<span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">		A[i] = even[e++];</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		A[i] = odd[o++];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>会多出N次<code>i%2 == 0</code>判断，耗时是7ms</p>
+<h3 id="2-Review-微基准测试框架JMH"><a href="#2-Review-微基准测试框架JMH" class="headerlink" title="2 Review 微基准测试框架JMH"></a>2 Review 微基准测试框架JMH</h3><p>原文链接： <a href="https://antoniogoncalves.org/2015/01/15/micro-benchmarking-with-jmh-measure-dont-guess/">https://antoniogoncalves.org/2015/01/15/micro-benchmarking-with-jmh-measure-dont-guess/</a></p>
+<p>这篇文章介绍了微基准测试框架<code>JMH</code>，<code>JMH</code> 是用来对运行在JVM上的语言做基准测试的非常方便的框架。比如你想要测试哪种json序列化框架的速度更快、吞吐量更高，使用<code>JMH</code>就可以很方便的进行测试，当然文中给出了一个关于日志log的测试，也是非常值得一看，会有不一样的收获。</p>
+<p>同时文中给了建议，在面对需要评估性能的时候应该有的态度：<code>Measure, don’t guess!</code></p>
+<p>另外<code>JMH</code>的官网地址：<a href="http://openjdk.java.net/projects/code-tools/jmh/">http://openjdk.java.net/projects/code-tools/jmh/</a></p>
+<h3 id="3-Tip-使用lombok简洁Java开发"><a href="#3-Tip-使用lombok简洁Java开发" class="headerlink" title="3 Tip 使用lombok简洁Java开发"></a>3 Tip 使用lombok简洁Java开发</h3><p>使用 <a href="https://projectlombok.org/features/all">lombok</a> 简化开发，提高效率。</p>
+<p>lombok使用注解的方式简化了诸多模板代码，最常用的示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataExample</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">double</span> score;</span><br><span class="line">  <span class="keyword">private</span> String[] tags;</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+<p>只需要一个<code>@Data</code>注解即可自动生成getter&#x2F;setter，toString，equals方法，免去模板代码，源文件比较精简。</p>
+<p>我常用的注解如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Accessors(chain = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DataExample</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">  <span class="keyword">private</span> <span class="type">double</span> score;</span><br><span class="line">  <span class="keyword">private</span> String[] tags;</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+<p>接下来就可以使用链式来构建对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DataExample</span> <span class="variable">dataExample</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DataExample</span>()</span><br><span class="line">    .setName(<span class="string">&quot;jack&quot;</span>)</span><br><span class="line">    .setAge(<span class="number">12</span>)</span><br><span class="line">    .setScore(<span class="number">123.2</span>);</span><br></pre></td></tr></table></figure>
+
+<p><code>lombok</code>优点显而易见，但是缺点是需要引入maven依赖，同时还需要在IDEA中安装lombok插件。lombok是在编译期对源文件做增强，所以你如果反编译DataExample类的class文件，会发现<code>lombok</code>做了很多改动，这导致你写的源文件和编译之后的class文件并不是对应的，严格来说这不是一件好事。但是简单注解使用一下问题不大。</p>
+<p>关于lombok的使用和安装可以参考 <a href="https://blog.csdn.net/zhglance/article/details/54931430">这里</a></p>
+<h3 id="4-Share-警惕掉入纯粹的时间换金钱的陷阱"><a href="#4-Share-警惕掉入纯粹的时间换金钱的陷阱" class="headerlink" title="4 Share 警惕掉入纯粹的时间换金钱的陷阱"></a>4 Share 警惕掉入纯粹的时间换金钱的陷阱</h3><p>分享一个思考，原文是阮一峰老师的每周分享 <a href="http://www.ruanyifeng.com/blog/2019/04/weekly-issue-50.html">第50期</a> 首语中提到一个观点：程序员要避免掉入纯粹的<strong>以时间换收入</strong>的陷阱中。看完之后想到一个问题供思考：程序员如何才能在自己不写代码的时候也能获得收入？</p>
+<p>之前忘记在何处看到一个观点是说，我们应该花更多的时间在能够为我们持续获得收入的事情上面。例如，花1年时间写了一本书，10年后，这本书还会持续为你产生收入 (ps:不过目前现状是写技术书籍其实是不赚钱的，还很容易被pdf，这儿只是举例)。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/04/21/ARTS-%E7%AC%AC3%E5%91%A8/" data-id="cmceore4r0007cqbohpevdb6p" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/04/25/Dubbo%E4%B9%8B%E8%BF%87%E6%BB%A4%E5%99%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Dubbo之过滤器
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/04/21/%E4%BB%8E%E5%A0%86%E5%88%B0PriorityQueue/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">从堆到PriorityQueue</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

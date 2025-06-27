@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Controller中private方法bean==null的排查 | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Controller类当中一个方法，使用了private声明，然后对应前端请求到达之后，方法中被注进来的bean为null，但是调用其他public方法没有问题….">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Controller中private方法bean&#x3D;&#x3D;null的排查">
+<meta property="og:url" content="http://yoursite.com/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:description" content="Controller类当中一个方法，使用了private声明，然后对应前端请求到达之后，方法中被注进来的bean为null，但是调用其他public方法没有问题….">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/controller%E4%B8%ADprivate%E6%B3%A8%E5%85%A5bean%E4%B8%BAnull-1.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/controller%E4%B8%ADprivate%E6%B3%A8%E5%85%A5bean%E4%B8%BAnull-2.jpeg">
+<meta property="article:published_time" content="2019-03-11T13:38:36.000Z">
+<meta property="article:modified_time" content="2025-06-27T10:27:58.697Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="SpringMVC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/controller%E4%B8%ADprivate%E6%B3%A8%E5%85%A5bean%E4%B8%BAnull-1.png">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Controller中private方法bean-null的排查" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            Controller中private方法bean==null的排查
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/">
+            <time datetime="2019-03-11T13:38:36.000Z" itemprop="datePublished">2019-03-11</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/SpringMVC/">SpringMVC</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%97%AE%E9%A2%98%E5%BC%95%E5%87%BA"><span class="toc-text">1 问题引出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="toc-text">2 问题排查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%A2%AB%E4%BB%A3%E7%90%86"><span class="toc-text">3 为什么会被代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8A%9B%E7%A9%BA%E6%8C%87%E9%92%88%E5%BC%82%E5%B8%B8"><span class="toc-text">4 为什么抛空指针异常</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text">5 总结</span></a></li></ol>
+                </div>
+            
+            <p><code>Controller</code>类当中一个方法，使用了<code>private</code>声明，然后对应前端请求到达之后，方法中被注进来的bean为null，但是调用其他<code>public</code>方法没有问题….</p>
+<span id="more"></span>
+
+<h2 id="1-问题引出"><a href="#1-问题引出" class="headerlink" title="1 问题引出"></a>1 问题引出</h2><p>某日下午，从小伙伴那里得知一个略显诡异的bug，<code>Controller</code>类当中一个方法，使用了<code>private</code>声明，然后对应前端请求到达之后，方法中被注进来的bean为null，但是调用其他<code>public</code>方法没有问题….</p>
+<p>搭了个demo来复现问题，代码大致如下，由于小伙伴的代码不方便展示，所以这里作了简化修改，但还是复现了问题：</p>
+<img src="controller中private注入bean为null-1.png" alter="controller中private注入bean为null-1"/>
+
+<p>问题如上图，当请求<code>GET /get/hi/hello</code> 时，执行对应的handler<code>sayHi</code>方法时报了NPE；但是诡异的是请求<code>POST /get/hi/hello</code> ，执行<code>sayHi2</code>时，没有任何问题….</p>
+<h2 id="2-问题排查"><a href="#2-问题排查" class="headerlink" title="2 问题排查"></a>2 问题排查</h2><p>首先结合现象思考一下，代码已经执行到了<code>ClientController</code>类的方法体里面，所以URL对应的handler是找到了，当执行到<code>demoService.sayHi()</code>时，才报了空指针。首先想到是<code>ClientController</code>中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowire</span></span><br><span class="line"><span class="keyword">private</span> DemoService demoService;</span><br></pre></td></tr></table></figure>
+<p><code>DemoService</code>没有被注进来。但如果是这样的话，那么执行<code>sayHi2</code>的时候也应该报<code>NPE</code>才对。事实上通过debug，查看<code>ClientController</code>中的<code>private DemoService demoService</code>属性是有值的，并不是<code>null</code></p>
+<p>好吧，只能debug一把了，入口自然是熟悉的<code>org.springframework.web.servlet.DispatcherServlet#doService</code>：</p>
+<p>先在postman中执行一个 GET请求：<code>localhost:8080/get/hi/23</code></p>
+<p>中间步骤我们就省略了，直接来到关键代码处<code>java.lang.reflect.Method#invoke</code>，在多次反射调用后，终于看到处理<code>localhost:8080/get/hi/23</code>对应的<code>handler</code>：</p>
+<img src="controller中private注入bean为null-2.jpeg" alter="controller中private注入bean为null-2"/>
+
+<ol>
+<li>图中1处return语句是我们熟悉的反射调用，这里的<code>ma</code>就是<code>GET /get/hi/hello</code> 对应的handler</li>
+<li>先看图中3处，请求的参数是“23”，和预期一致</li>
+<li>再看图中4处，这里很清楚可以看到找到了<code>handler</code>：</li>
+</ol>
+<p><code>class com.example.kindsdemo.controller.ClientController</code> 类的<code>private Object ClientController.sayHi(java.lang.String)</code>方法</p>
+<p>直到这里好像没有发现什么问题，一切都和预期一致</p>
+<ol start="4">
+<li>关键看图中2处，<code>method</code>反射调用执行时，使用的类是：<br><code>ClientController$$EnhancerBySpringCGLIB$$715a2388</code>。这个类光看名字就知道它不正经，实际上这表名，此处从IoC容器中拿到的是一个代理类，并且是CGLIB代理生成的类</li>
+</ol>
+<h2 id="3-为什么会被代理"><a href="#3-为什么会被代理" class="headerlink" title="3 为什么会被代理"></a>3 为什么会被代理</h2><p>那么问题来了，我们知道，<code>Spring IoC</code>容器中管理的<code>bean</code>，只有在有需要的时候才会生成代理类(主要是在<code>AbstractAutoProxyCreator#wrapIfNecessary</code>做相关操作，包括选择JDK还是CGLIB做代理，不在本文讨论了)。</p>
+<p>我们又知道<code>RestController</code>注解是组合了<code>@Controller</code>和<br><code>@ResponseBody</code>，而<code>@Controller</code>又组合了<code>@Component</code>注解。被<code>@Component</code>注解的类，会被Spring扫描并管理成<code>Spring</code>容器中的bean。那显然<code>RestController</code>注解并不需要被AOP增强或拦截。</p>
+<p>然而细心的朋友可能已经发现，上面demo中的<code>ClientController</code>类中有一个<code>@Monitor</code>注解</p>
+<p>原来在小伙伴的工程中，自定义了一个注解<code>@Monitor</code>，在<code>pom</code>文件中引入了<code>spring-boot-starter-aop</code>模块，在一个<code>Configuration</code>配置类中开启了<code>@EnableAspectJAutoProxy</code>注解，并写了一个切面类来拦截使用了<code>@Monitor</code>注解的类中的方法，这才导致<code>ClientController</code>类被<code>Spring Aop</code>代理</p>
+<h2 id="4-为什么抛空指针异常"><a href="#4-为什么抛空指针异常" class="headerlink" title="4 为什么抛空指针异常"></a>4 为什么抛空指针异常</h2><p>那么问题又来了，既然在<code>Spring IoC</code>容器中，<code>ClientController</code>被代理成了<code>ClientController$$EnhancerBySpringCGLIB$$715a2388</code>，那为什么调用<code>sayHi</code>方法会抛NPE，而<code>sayHi2</code>方法却不会呢？按道理说既然是同一个类的实例访问类的属性<code>demoService</code>，那应该同时抛出NPE才对，从开始排查问题到目前，也没有发现<code>Spring Aop</code>中哪里有对目标类的<code>private</code>方法和<code>public</code>方法做过特殊处理啊…</p>
+<p>好吧，追根溯源，把动态生成的<code>ClientController$$EnhancerBySpringCGLIB$$715a2388</code>类扒出来看看。由于该类是运行期动态生成，所以没有class文件生成在目录下，这里推荐使用阿里巴巴开源排查问题的工具<a href="https://alibaba.github.io/arthas/arthas-tutorials?language=cn"><code>Arthas</code></a>，使用其<code>jad</code>命令即可方便获取到代理类。</p>
+<p>下面我们来看下这个<code>ClientController$$EnhancerBySpringCGLIB$$715a2388</code>长什么样，由于<code>CGLIB</code>生成的类代码量略大，去掉一些内容，我们先来看看可以正常执行的<code>sayHi2</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClientController$$EnhancerBySpringCGLIB$$715a2388</span></span><br><span class="line"><span class="keyword">extends</span> <span class="title class_">ClientController</span></span><br><span class="line"><span class="keyword">implements</span> <span class="title class_">SpringProxy</span>,</span><br><span class="line">Advised,</span><br><span class="line">Factory &#123;</span><br><span class="line">    .....</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title function_">sayHi2</span><span class="params">(String string)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">MethodInterceptor</span> <span class="variable">methodInterceptor</span> <span class="operator">=</span> <span class="built_in">this</span>.CGLIB$CALLBACK_0;</span><br><span class="line">            <span class="keyword">if</span> (methodInterceptor == <span class="literal">null</span>) &#123;</span><br><span class="line">                ClientController$$EnhancerBySpringCGLIB$$715a2388.CGLIB$BIND_CALLBACKS(<span class="built_in">this</span>);</span><br><span class="line">                methodInterceptor = <span class="built_in">this</span>.CGLIB$CALLBACK_0;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (methodInterceptor != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 使用 methodInterceptor 执行方法调用</span></span><br><span class="line">                <span class="keyword">return</span> methodInterceptor.intercept(<span class="built_in">this</span>, CGLIB$sayHi2$<span class="number">0</span>$Method, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;string&#125;, CGLIB$sayHi2$<span class="number">0</span>$Proxy);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">super</span>.sayHi2(string);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Error | RuntimeException throwable) &#123;</span><br><span class="line">            <span class="keyword">throw</span> throwable;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Throwable throwable) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UndeclaredThrowableException</span>(throwable);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    .....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到该类继承了<code>ClientController</code>类，然后实现了关于aop和代理的3个接口，这里就不展开讨论了。在<code>sayHi2</code>中，可以看到<code>Spring AOP</code>(<code>CGLIB</code>)的方法拦截器<code>MethodInterceptor</code>实例，在调用<code>sayHi2</code>方法时，会在<code>methodInterceptor.intercept(..)</code>中执行真实的方法逻辑代码，那这里看不出什么问题，一切都很正常</p>
+<p>接下来我们来看下执行有问题的<code>sayHi</code>方法，在<code>ClientController$$EnhancerBySpringCGLIB$$715a2388</code>类中一搜，emmm….找不到<code>sayHi</code>方法 ？等等..哦…恍然大悟，突然回过神来：<code>sayHi</code>是<code>private方法</code>，<code>CGLIB</code>的代理思路是给目标类生成一个子类，在子类中进行增强操作。所<code>CGLIB</code>最无奈两样东西，一个是<code>final</code>，一个就是<code>private</code>了…</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5 总结"></a>5 总结</h2><p>那么到这里就清晰明了了，我们可以总结一下，在<code>CGLIB</code>代理的类中，无法继承目标类的<code>private</code>方法，所以在执行反射调用的时候(本文对应就是前端发起<code>GET</code>请求，执行<code>URL</code>对应的<code>handler</code>方法)，拿到的<code>syaHi</code>方法，其实是父类(<code>ClientController</code>)的方法，而不是代理类的<code>syaHi</code>方法，然而父类中的属性(<code>demoService</code>)并没有初始化，所以用到的时候就报了NPE。</p>
+<p>这也就解释了为什么<code>sayHi2</code>方法不会报<code>NPE</code>，而<code>sayHi</code>方法会报<code>NPE</code>。本质上是一个拿到了代理类的方法，走了代理；另一个拿到的其实是父类的方法，造成NPE。</p>
+<p>回到问题最初，其实本文标题和问题的根源并不相符，和<code>@Controller</code>注解无关，所以在一开始搭建demo工程的时候，没有注意到自定义的<code>Monitor</code>注解，搭的demo工程运行的很好，无法复现问题，在反复调试了demo工程和小伙伴有问题的工程代码后，才找到了差别，注意到原来是<code>CGLIB</code>代理造成的，至此问题根源明白~</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/" data-id="cmceore4t000rcqboh4mocr13" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Dubbo之服务引用过程
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/03/08/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Spring扩展接口</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>

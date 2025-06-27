@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Spring扩展接口 | Chenyan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="1、前言利用Spring的扩展接口，来定制bean。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring扩展接口">
+<meta property="og:url" content="http://yoursite.com/2019/03/08/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3/index.html">
+<meta property="og:site_name" content="Chenyan">
+<meta property="og:description" content="1、前言利用Spring的扩展接口，来定制bean。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://qn.zwuyang.cn/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3SmartLifecycle/picture.logo">
+<meta property="og:image" content="http://qn.zwuyang.cn/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3-SmartLifecycle/picture.logo">
+<meta property="og:image" content="http://qn.zwuyang.cn/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3-bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F1/picture.logo">
+<meta property="og:image" content="http://qn.zwuyang.cn/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3-bean%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F2/picture.logo">
+<meta property="article:published_time" content="2019-03-07T16:31:17.000Z">
+<meta property="article:modified_time" content="2019-10-20T05:07:19.000Z">
+<meta property="article:author" content="Chenyan">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qn.zwuyang.cn/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3SmartLifecycle/picture.logo">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/avatar.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-brands.min.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome5/css/fa-solid.min.css">
+
+    
+<link rel="stylesheet" href="/libs/open-sans/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                
+                <span class="site-title">Chenyan</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="/categories">分类</a>
+                
+                    <a class="main-nav-link" href="/about">关于</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fas fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="/categories">分类</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">关于</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">Chenyan</h2>
+            <h3 id="title">脚踏实地 仰望星空</h3>
+            <span id="location"><i class="fas fa-map-marker-alt" style="padding-right: 5px"></i>Hangzhou,China</span>
+            <a id="follow" target="_blank" href="https://github.com/chen-nay">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                35
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                9
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/chen-nay" target="_blank" title="github" class=tooltip>
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/css/images/wuyang-wechat.jpg" target="_blank" title="weixin" class=tooltip>
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-Spring扩展接口" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name" style="color: #009688;font-size:1.5em;">
+            Spring扩展接口
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fas fa-calendar-alt"></i>
+        <a href="/2019/03/08/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3/">
+            <time datetime="2019-03-07T16:31:17.000Z" itemprop="datePublished">2019-03-08</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fas fa-folder"></i>
+        <a class="article-category-link" href="/categories/Spring/">Spring</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Spring/" rel="tag">Spring</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+                <div id="toc" class="toc-article">
+                <strong class="toc-title">文章目录</strong>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E8%A8%80"><span class="toc-text">1、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81BeanFactoryPostProcessor"><span class="toc-text">2、BeanFactoryPostProcessor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%B8%B8%E8%A7%81BFPP"><span class="toc-text">2.1 常见BFPP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-PropertyPlaceholderConfigurer"><span class="toc-text">2.1.1 PropertyPlaceholderConfigurer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-PropertyOverrideConfigurer"><span class="toc-text">2.1.2 PropertyOverrideConfigurer</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81Aware"><span class="toc-text">3、Aware</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%B8%B8%E8%A7%81Aware"><span class="toc-text">3.1 常见Aware</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-ApplicationContextAware"><span class="toc-text">3.1.1 ApplicationContextAware</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-ApplicationEventPublisherAware"><span class="toc-text">3.1.2 ApplicationEventPublisherAware</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-BeanNameAware"><span class="toc-text">3.1.3 BeanNameAware</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-4-EnvironmentAware"><span class="toc-text">3.1.4 EnvironmentAware</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81BeanPostProcessor"><span class="toc-text">4、BeanPostProcessor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%B8%B8%E8%A7%81BPP"><span class="toc-text">4.1 常见BPP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-1-ApplicationContextAwareProcessor"><span class="toc-text">4.1.1  ApplicationContextAwareProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-2-AutowiredAnnotationBeanPostProcessor"><span class="toc-text">4.1.2 AutowiredAnnotationBeanPostProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-3-RequiredAnnotationBeanPostProcessor"><span class="toc-text">4.1.3 RequiredAnnotationBeanPostProcessor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-4-AbstractAutoProxyCreator"><span class="toc-text">4.1.4 AbstractAutoProxyCreator</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81InitializingBean-DisposableBean"><span class="toc-text">5、InitializingBean &amp; DisposableBean</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-InitializingBean"><span class="toc-text">5.1 InitializingBean</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-DisposableBean"><span class="toc-text">5.2 DisposableBean</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-SmartInitializingSingleton"><span class="toc-text">5.3 SmartInitializingSingleton</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81LifeCycle"><span class="toc-text">6、LifeCycle</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%B8%B8%E8%A7%81LifeCycle"><span class="toc-text">6.1 常见LifeCycle</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-1-SmartLifecycle"><span class="toc-text">6.1.1 SmartLifecycle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-2-LifecycleProcessor"><span class="toc-text">6.1.2 LifecycleProcessor</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E8%BF%90%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">7、运行顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">8、参考链接</span></a></li></ol>
+                </div>
+            
+            <h2 id="1、前言"><a href="#1、前言" class="headerlink" title="1、前言"></a>1、前言</h2><p>利用Spring的扩展接口，来定制bean。</p>
+<span id="more"></span>
+
+<h2 id="2、BeanFactoryPostProcessor"><a href="#2、BeanFactoryPostProcessor" class="headerlink" title="2、BeanFactoryPostProcessor"></a>2、BeanFactoryPostProcessor</h2><p>BFPP是针对BeanDefinition而言的，在bean实例化之前进行调用。注意此时是针对BeanDefinition做修改，bean还没有实例化。可以用来对属性进行覆盖。</p>
+<p>发生的时机是在bean进行<strong>实例化之前</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BeanFactoryPostProcessor</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Modify the application context&#x27;s internal bean factory after its standard</span></span><br><span class="line"><span class="comment">	 * initialization. All bean definitions will have been loaded, but no beans</span></span><br><span class="line"><span class="comment">	 * will have been instantiated yet. This allows for overriding or adding</span></span><br><span class="line"><span class="comment">	 * properties even to eager-initializing beans.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> beanFactory the bean factory used by the application context</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> org.springframework.beans.BeansException in case of errors</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用举例，在postProcessBeanFactory方法中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BeanDefinition beanDefinition = beanFactory.getBeanDefinition(&quot;myBean&quot;);</span><br><span class="line"></span><br><span class="line">beanDefinition.getPropertyValues().add(&quot;name&quot;, &quot;newName&quot;);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-1-常见BFPP"><a href="#2-1-常见BFPP" class="headerlink" title="2.1 常见BFPP"></a>2.1 常见BFPP</h3><h4 id="2-1-1-PropertyPlaceholderConfigurer"><a href="#2-1-1-PropertyPlaceholderConfigurer" class="headerlink" title="2.1.1 PropertyPlaceholderConfigurer"></a>2.1.1 PropertyPlaceholderConfigurer</h4><p>实现了BFPP和Aware，可以在XML配置文件中将关键属性使用${name}占位符，而把真实值抽到一个properties文件中。目前springboot应用中还没用到过这个功能….</p>
+<h4 id="2-1-2-PropertyOverrideConfigurer"><a href="#2-1-2-PropertyOverrideConfigurer" class="headerlink" title="2.1.2 PropertyOverrideConfigurer"></a>2.1.2 PropertyOverrideConfigurer</h4><p>和PropertyPlaceholderConfigurer的区别就是，可以在XML配置文件中设置初始值，如果properties文件中也有相应的值，则覆盖，没有则使用XML中配置的值。目前springboot应用中也是还没用到过这个功能….</p>
+<h2 id="3、Aware"><a href="#3、Aware" class="headerlink" title="3、Aware"></a>3、Aware</h2><p>直译即为感知点，标记接口，实现该接口的类会通过回调得到Spring容器的某种通知，通过通知获得资源，有了资源就即可进行某些操作</p>
+<p>发生Aware回调通知的时机是在bean进行<strong>实例化之后</strong></p>
+<h3 id="3-1-常见Aware"><a href="#3-1-常见Aware" class="headerlink" title="3.1 常见Aware"></a>3.1 常见Aware</h3><h4 id="3-1-1-ApplicationContextAware"><a href="#3-1-1-ApplicationContextAware" class="headerlink" title="3.1.1 ApplicationContextAware"></a>3.1.1 ApplicationContextAware</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationContextAware</span> <span class="keyword">extends</span> <span class="title class_">Aware</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Set the ApplicationContext that this object runs in.</span></span><br><span class="line"><span class="comment">	 * Normally this call will be used to initialize the object.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Invoked after population of normal bean properties but before an init callback such</span></span><br><span class="line"><span class="comment">	 * as &#123;<span class="doctag">@link</span> org.springframework.beans.factory.InitializingBean#afterPropertiesSet()&#125;</span></span><br><span class="line"><span class="comment">	 * or a custom init-method. Invoked after &#123;<span class="doctag">@link</span> ResourceLoaderAware#setResourceLoader&#125;,</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> ApplicationEventPublisherAware#setApplicationEventPublisher&#125; and</span></span><br><span class="line"><span class="comment">	 * &#123;<span class="doctag">@link</span> MessageSourceAware&#125;, if applicable.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> applicationContext the ApplicationContext object to be used by this object</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> ApplicationContextException in case of context initialization errors</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> BeansException if thrown by application context methods</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@see</span> org.springframework.beans.factory.BeanInitializationException</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个Aware最大的作用就是可以拿到容器上下文，注意如果是springboot构建应用，会进行推断当前应该是用什么上下文，非web应用一般是AnnotationConfigApplicationContext。</p>
+<p>拿到ApplicationContext实例之后，就可以自由发挥很多功能了。</p>
+<h4 id="3-1-2-ApplicationEventPublisherAware"><a href="#3-1-2-ApplicationEventPublisherAware" class="headerlink" title="3.1.2 ApplicationEventPublisherAware"></a>3.1.2 ApplicationEventPublisherAware</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationEventPublisherAware</span> <span class="keyword">extends</span> <span class="title class_">Aware</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Set the ApplicationEventPublisher that this object runs in.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Invoked after population of normal bean properties but before an init</span></span><br><span class="line"><span class="comment">	 * callback like InitializingBean&#x27;s afterPropertiesSet or a custom init-method.</span></span><br><span class="line"><span class="comment">	 * Invoked before ApplicationContextAware&#x27;s setApplicationContext.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> applicationEventPublisher event publisher to be used by this object</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">setApplicationEventPublisher</span><span class="params">(ApplicationEventPublisher applicationEventPublisher)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以让实现类通过setApplicationEventPublisher方法获取到事件发布器实例ApplicationEventPublisher，调用ApplicationEventPublisher#publishEvent进行事件发布。</p>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">implements</span> <span class="title class_">ApplicationEventPublisherAware</span> &#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> ApplicationEventPublisher applicationEventPublisher;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSome</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="comment">// 业务代码</span></span><br><span class="line">    	doSomething()</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//消息发布</span></span><br><span class="line">		applicationEventPublisher.publishEvent(T <span class="keyword">extends</span> <span class="title class_">UserRegisterEvent</span>);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setApplicationEventPublisher</span><span class="params">(ApplicationEventPublisher applicationEventPublisher)</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.applicationEventPublisher = applicationEventPublisher;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="3-1-3-BeanNameAware"><a href="#3-1-3-BeanNameAware" class="headerlink" title="3.1.3 BeanNameAware"></a>3.1.3 BeanNameAware</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BeanNameAware</span> <span class="keyword">extends</span> <span class="title class_">Aware</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Set the name of the bean in the bean factory that created this bean.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;Invoked after population of normal bean properties but before an</span></span><br><span class="line"><span class="comment">	 * init callback such as &#123;<span class="doctag">@link</span> InitializingBean#afterPropertiesSet()&#125;</span></span><br><span class="line"><span class="comment">	 * or a custom init-method.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> name the name of the bean in the factory.</span></span><br><span class="line"><span class="comment">	 * Note that this name is the actual bean name used in the factory, which may</span></span><br><span class="line"><span class="comment">	 * differ from the originally specified name: in particular for inner bean</span></span><br><span class="line"><span class="comment">	 * names, the actual bean name might have been made unique through appending</span></span><br><span class="line"><span class="comment">	 * &quot;#...&quot; suffixes. Use the &#123;<span class="doctag">@link</span> BeanFactoryUtils#originalBeanName(String)&#125;</span></span><br><span class="line"><span class="comment">	 * method to extract the original bean name (without suffix), if desired.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">setBeanName</span><span class="params">(String name)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让bean获取到自己的名字</p>
+<h4 id="3-1-4-EnvironmentAware"><a href="#3-1-4-EnvironmentAware" class="headerlink" title="3.1.4 EnvironmentAware"></a>3.1.4 EnvironmentAware</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">EnvironmentAware</span> <span class="keyword">extends</span> <span class="title class_">Aware</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Set the &#123;<span class="doctag">@code</span> Environment&#125; that this component runs in.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">setEnvironment</span><span class="params">(Environment environment)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获取到Environment实例，举例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class MyEnvironmentAware implements EnvironmentAware &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void setEnvironment(Environment environment) &#123;</span><br><span class="line">            String baseUrl = environment.getProperty(&quot;base.url&quot;);</span><br><span class="line">            System.out.println(baseUrl);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>可以获取到aplication.properties中配置的属性</p>
+<h2 id="4、BeanPostProcessor"><a href="#4、BeanPostProcessor" class="headerlink" title="4、BeanPostProcessor"></a>4、BeanPostProcessor</h2><p>每一个bean在<strong>初始化</strong>前后都会调用到BPP的after和before方法。实现这个接口的类要特别注意，容器中<strong>每一个</strong>bean在初始化前后都会回调到实现类的postProcessBeforeInitialization和postProcessAfterInitialization方法</p>
+<p>调用BPP的时候，bean已经实例化，并且注入过属性了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BeanPostProcessor</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">default</span> Object <span class="title function_">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">default</span> Object <span class="title function_">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-1-常见BPP"><a href="#4-1-常见BPP" class="headerlink" title="4.1 常见BPP"></a>4.1 常见BPP</h3><h4 id="4-1-1-ApplicationContextAwareProcessor"><a href="#4-1-1-ApplicationContextAwareProcessor" class="headerlink" title="4.1.1  ApplicationContextAwareProcessor"></a>4.1.1  ApplicationContextAwareProcessor</h4><p>这个类的作用是对实现了某些Aware接口的bean，注入需要的上下文或者环境，见代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ApplicationContextAwareProcessor#invokeAwareInterfaces</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">invokeAwareInterfaces</span><span class="params">(Object bean)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> Aware) &#123;</span><br><span class="line">	    <span class="comment">// 如果当前bean实现了EnvironmentAware 进行上下文环境的注入 下同</span></span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> EnvironmentAware) &#123;</span><br><span class="line">			((EnvironmentAware) bean).setEnvironment(<span class="built_in">this</span>.applicationContext.getEnvironment());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> EmbeddedValueResolverAware) &#123;</span><br><span class="line">			((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(<span class="built_in">this</span>.embeddedValueResolver);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ResourceLoaderAware) &#123;</span><br><span class="line">			((ResourceLoaderAware) bean).setResourceLoader(<span class="built_in">this</span>.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ApplicationEventPublisherAware) &#123;</span><br><span class="line">			((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(<span class="built_in">this</span>.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> MessageSourceAware) &#123;</span><br><span class="line">			((MessageSourceAware) bean).setMessageSource(<span class="built_in">this</span>.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ApplicationContextAware) &#123;</span><br><span class="line">			((ApplicationContextAware) bean).setApplicationContext(<span class="built_in">this</span>.applicationContext);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-1-2-AutowiredAnnotationBeanPostProcessor"><a href="#4-1-2-AutowiredAnnotationBeanPostProcessor" class="headerlink" title="4.1.2 AutowiredAnnotationBeanPostProcessor"></a>4.1.2 AutowiredAnnotationBeanPostProcessor</h4><p>这个BPP是用来处理 @Autowired、@Value注解的实现，如果当前bean有这些注解，则会进行相应的注入处理</p>
+<h4 id="4-1-3-RequiredAnnotationBeanPostProcessor"><a href="#4-1-3-RequiredAnnotationBeanPostProcessor" class="headerlink" title="4.1.3 RequiredAnnotationBeanPostProcessor"></a>4.1.3 RequiredAnnotationBeanPostProcessor</h4><p>看名字就知道是处理@Required注解的。</p>
+<p>类似用来处理特定注解的BPP还有，就不一一写出了</p>
+<h4 id="4-1-4-AbstractAutoProxyCreator"><a href="#4-1-4-AbstractAutoProxyCreator" class="headerlink" title="4.1.4 AbstractAutoProxyCreator"></a>4.1.4 AbstractAutoProxyCreator</h4><p>这个BPP是用来给bean生成代理的，默认是不会注册到容器。假设springboot配置了aop-starter，那会自动装配到容器中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">postProcessAfterInitialization</span><span class="params">(<span class="meta">@Nullable</span> Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">	<span class="keyword">if</span> (bean != <span class="literal">null</span>) &#123;</span><br><span class="line">		<span class="type">Object</span> <span class="variable">cacheKey</span> <span class="operator">=</span> getCacheKey(bean.getClass(), beanName);</span><br><span class="line">		<span class="keyword">if</span> (!<span class="built_in">this</span>.earlyProxyReferences.contains(cacheKey)) &#123;</span><br><span class="line">			<span class="keyword">return</span> wrapIfNecessary(bean, beanName, cacheKey);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5、InitializingBean-DisposableBean"><a href="#5、InitializingBean-DisposableBean" class="headerlink" title="5、InitializingBean &amp; DisposableBean"></a>5、InitializingBean &amp; DisposableBean</h2><h3 id="5-1-InitializingBean"><a href="#5-1-InitializingBean" class="headerlink" title="5.1 InitializingBean"></a>5.1 InitializingBean</h3><p>在完成了Aware和BPP的后置处理之后，如果bean实现了InitializingBean，则会调用afterPropertiesSet()方法，进一步调整当前bean的状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">InitializingBean</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Invoked by the containing &#123;<span class="doctag">@code</span> BeanFactory&#125; after it has set all bean properties</span></span><br><span class="line"><span class="comment">	 * and satisfied &#123;<span class="doctag">@link</span> BeanFactoryAware&#125;, &#123;<span class="doctag">@code</span> ApplicationContextAware&#125; etc.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;This method allows the bean instance to perform validation of its overall</span></span><br><span class="line"><span class="comment">	 * configuration and final initialization when all bean properties have been set.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception in the event of misconfiguration (such as failure to set an</span></span><br><span class="line"><span class="comment">	 * essential property) or if initialization fails for any other reason</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要达到相同的效果，可以使用@PostConstruct注解，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExampleBean</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 标识当前bean的该方法会被回调执行</span></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// do some initialization work</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>官方文档建议使用注解的形式，而不是实现InitializingBean接口</p>
+<h3 id="5-2-DisposableBean"><a href="#5-2-DisposableBean" class="headerlink" title="5.2 DisposableBean"></a>5.2 DisposableBean</h3><p>如果bean实现了DisposableBean接口，那么在该bean实例销毁的时候，会回调destroy方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">DisposableBean</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Invoked by the containing &#123;<span class="doctag">@code</span> BeanFactory&#125; on destruction of a bean.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@throws</span> Exception in case of shutdown errors. Exceptions will get logged</span></span><br><span class="line"><span class="comment">	 * but not rethrown to allow other beans to release their resources as well.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样的要达到相同的效果，也有注解可以用，@PreDestroy 例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ExampleBean</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 标识当前bean实例销毁时该方法会被回调执行</span></span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// do some initialization work</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样的，官方文档建议使用注解的形式，而不是实现DisposableBean接口</p>
+<h3 id="5-3-SmartInitializingSingleton"><a href="#5-3-SmartInitializingSingleton" class="headerlink" title="5.3 SmartInitializingSingleton"></a>5.3 SmartInitializingSingleton</h3><p>实现这个接口的bean，会在容器所有单例作用域的bean初始化结束后回调afterSingletonsInstantiated方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SmartInitializingSingleton</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Invoked right at the end of the singleton pre-instantiation phase,</span></span><br><span class="line"><span class="comment">	 * with a guarantee that all regular singleton beans have been created</span></span><br><span class="line"><span class="comment">	 * already. &#123;<span class="doctag">@link</span> ListableBeanFactory#getBeansOfType&#125; calls within</span></span><br><span class="line"><span class="comment">	 * this method won&#x27;t trigger accidental side effects during bootstrap.</span></span><br><span class="line"><span class="comment">	 * &lt;p&gt;&lt;b&gt;<span class="doctag">NOTE:</span>&lt;/b&gt; This callback won&#x27;t be triggered for singleton beans</span></span><br><span class="line"><span class="comment">	 * lazily initialized on demand after &#123;<span class="doctag">@link</span> BeanFactory&#125; bootstrap,</span></span><br><span class="line"><span class="comment">	 * and not for any other bean scope either. Carefully use it for beans</span></span><br><span class="line"><span class="comment">	 * with the intended bootstrap semantics only.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">afterSingletonsInstantiated</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="6、LifeCycle"><a href="#6、LifeCycle" class="headerlink" title="6、LifeCycle"></a>6、LifeCycle</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Lifecycle</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isRunning</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Lifecycle接口提供了一些方法在容器启动和关闭的时候进行调用，比如一些后台执行的任务可以使用该接口。注意两点：一是在执行start和stop之前会先判断isRunning的返回，根据返回来决定是否调用start(false时调用)或stop(true时调用)方法；二是Lifecycle接口不会自动随着容器启动关闭自动进行相应方法的回调。</p>
+<h3 id="6-1-常见LifeCycle"><a href="#6-1-常见LifeCycle" class="headerlink" title="6.1 常见LifeCycle"></a>6.1 常见LifeCycle</h3><h4 id="6-1-1-SmartLifecycle"><a href="#6-1-1-SmartLifecycle" class="headerlink" title="6.1.1 SmartLifecycle"></a>6.1.1 SmartLifecycle</h4><img src="http://qn.zwuyang.cn/Spring扩展接口SmartLifecycle/picture.logo" alter="Spring扩展接口SmartLifecycle" width="442" height="202"/>
+
+<p>SmartLifecycle可以完成自动注册，随着容器启动可以自动开始进行相应判断进行回调。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyLifeCycle</span> <span class="keyword">implements</span> <span class="title class_">SmartLifecycle</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">runningFlag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用了start之后记得标记标志为true 表示bean已经启动(调用过start方法)</span></span><br><span class="line">    <span class="comment">// 调用之前先判断 isRunning() 返回false才调用start</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">start</span><span class="params">()</span> &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;start &quot;</span>);</span><br><span class="line">        runningFlag = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用了stop之后记得标记标志为false 表示bean已经关闭(调用过stop方法)</span></span><br><span class="line">    <span class="comment">// 调用之前先判断 isRunning() 返回true才调用stop</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;stop &quot;</span>);</span><br><span class="line">        runningFlag = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回当前bean是否已经启动过 (已经调用过start方法)</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isRunning</span><span class="params">()</span> &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;isRunning &quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> runningFlag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回true 表示需要自动进行判断并进行回调</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isAutoStartup</span><span class="params">()</span> &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;isAutoStartup is &quot;</span>+ <span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用了stop之后记得标记标志为false 表示bean已经关闭(调用过stop方法)</span></span><br><span class="line">    <span class="comment">// 调用之前先判断 isRunning() 返回true才调用stop</span></span><br><span class="line">    <span class="comment">// 容器关闭时会调这个stop方法，而不是上面的stop()</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">(Runnable callback)</span> &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;stop(Runnable callback) &quot;</span>);</span><br><span class="line">        <span class="comment">// doSomething 可以使用新线程来做 但是注意在新线程的最后一定要调用 callback.run() 方法</span></span><br><span class="line">        <span class="comment">// 详情参见 https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-processor</span></span><br><span class="line">        callback.run();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 多个SmartLifecycle 的时候，如果有先后顺序的要求，可以使用这个方法来定义顺序 </span></span><br><span class="line">    <span class="comment">// 启动的时候 值越小越先启动 关闭的时候反过来 值越小越晚关闭</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getPhase</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="http://qn.zwuyang.cn/Spring扩展接口-SmartLifecycle/picture.logo" alter="Spring扩展接口-SmartLifecycle"/>
+
+<p>其随着容器启动和关闭的方法回调顺序如下，注意到并没有回调到stop()方法，而是stop(Runnable callback)方法。同时再注意一点，stop(Runnable callback)方法中，可以根据需要使用多线程来进行相关回收工作，但是一定要调用callback.run()方法，同时，如果超时30s还没有调用，会强制认为已经完成了stop工作。详情见<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-factory-lifecycle-processor">官方文档</a>。</p>
+<h4 id="6-1-2-LifecycleProcessor"><a href="#6-1-2-LifecycleProcessor" class="headerlink" title="6.1.2 LifecycleProcessor"></a>6.1.2 LifecycleProcessor</h4><p>与其说它是Lifecycle，不如说它是所有Lifecycle bean的处理器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">LifecycleProcessor</span> <span class="keyword">extends</span> <span class="title class_">Lifecycle</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Notification of context refresh, e.g. for auto-starting components.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">onRefresh</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Notification of context close phase, e.g. for auto-stopping components.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">onClose</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看方法名可知，该接口主要提供两个回调，一个是上下文刷新，一个是上下文关闭时的回调</p>
+<p>在Spring中仅有一个实现类：生命周期处理器-DefaultLifecycleProcessor，重点看两个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DefaultLifecycleProcessor</span> <span class="keyword">implements</span> <span class="title class_">LifecycleProcessor</span>, BeanFactoryAware &#123;</span><br><span class="line">    ....</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Start all registered beans that implement &#123;<span class="doctag">@link</span> Lifecycle&#125; and are &lt;i&gt;not&lt;/i&gt;</span></span><br><span class="line"><span class="comment">	 * already running. Any bean that implements &#123;<span class="doctag">@link</span> SmartLifecycle&#125; will be</span></span><br><span class="line"><span class="comment">	 * started within its &#x27;phase&#x27;, and all phases will be ordered from lowest to</span></span><br><span class="line"><span class="comment">	 * highest value. All beans that do not implement &#123;<span class="doctag">@link</span> SmartLifecycle&#125; will be</span></span><br><span class="line"><span class="comment">	 * started in the default phase 0. A bean declared as a dependency of another bean</span></span><br><span class="line"><span class="comment">	 * will be started before the dependent bean regardless of the declared phase.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onRefresh</span><span class="params">()</span> &#123;</span><br><span class="line">    	startBeans(<span class="literal">true</span>);</span><br><span class="line">    	<span class="built_in">this</span>.running = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Stop all registered beans that implement &#123;<span class="doctag">@link</span> Lifecycle&#125; and &lt;i&gt;are&lt;/i&gt;</span></span><br><span class="line"><span class="comment">	 * currently running. Any bean that implements &#123;<span class="doctag">@link</span> SmartLifecycle&#125; will be</span></span><br><span class="line"><span class="comment">	 * stopped within its &#x27;phase&#x27;, and all phases will be ordered from highest to</span></span><br><span class="line"><span class="comment">	 * lowest value. All beans that do not implement &#123;<span class="doctag">@link</span> SmartLifecycle&#125; will be</span></span><br><span class="line"><span class="comment">	 * stopped in the default phase 0. A bean declared as dependent on another bean</span></span><br><span class="line"><span class="comment">	 * will be stopped before the dependency bean regardless of the declared phase.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onClose</span><span class="params">()</span> &#123;</span><br><span class="line">    	stopBeans();</span><br><span class="line">    	<span class="built_in">this</span>.running = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>方法上的java doc很重要，可以看一下。比如上下文刷新的时候onRefresh()方法，其中的startBeans方法中会对我们容器中的所有LifeCycle bean进行回调，比方6.1.1小节当中的MyLifeCycle bean的start方法回调即是在此处由DefaultLifecycleProcessor回调的，它即是管理LifeCycle bean生命周期的bean</p>
+<h2 id="7、运行顺序"><a href="#7、运行顺序" class="headerlink" title="7、运行顺序"></a>7、运行顺序</h2><p>扩展点的运行顺序，可以参考如下两幅图：</p>
+<ol>
+<li>《Spring 实战 4》1.2.2 小节，bean的生命周期</li>
+</ol>
+<img src="http://qn.zwuyang.cn/Spring扩展接口-bean生命周期1/picture.logo" alter="Spring扩展接口-bean生命周期1"/>
+
+<ol start="2">
+<li>《Spring 5 高级编程(第五版)》4.2小节，管理bean生命周期</li>
+</ol>
+<img src="http://qn.zwuyang.cn/Spring扩展接口-bean生命周期2/picture.logo" alter="Spring扩展接口-bean生命周期2"/>
+
+<h2 id="8、参考链接"><a href="#8、参考链接" class="headerlink" title="8、参考链接"></a>8、参考链接</h2><p><a href="http://fangjian0423.github.io/2017/06/24/spring-embedded-bean-post-processor/">http://fangjian0423.github.io/2017/06/24/spring-embedded-bean-post-processor/</a></p>
+<p><a href="https://blog.csdn.net/boling_cavalry/article/details/82051356">https://blog.csdn.net/boling_cavalry/article/details/82051356</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="http://yoursite.com/2019/03/08/Spring%E6%89%A9%E5%B1%95%E6%8E%A5%E5%8F%A3/" data-id="cmceore4y002kcqbo9cjiavch" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fab fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fab fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fab fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fab fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2019/03/11/Controller%E4%B8%ADprivate%E6%96%B9%E6%B3%95bean-null%E7%9A%84%E6%8E%92%E6%9F%A5/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Controller中private方法bean==null的排查
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Dubbo之服务暴露过程</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="no-thumbnail">
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/06/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94%E5%88%9B%E5%BB%BA%E5%9E%8B/" class="title">设计模式-创建型</a></p>
+                            <p class="item-date"><time datetime="2019-10-06T13:23:27.000Z" itemprop="datePublished">2019-10-06</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a></p>
+                            <p class="item-title"><a href="/2019/10/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E2%80%94UML%E7%B1%BB%E5%9B%BE%E5%8F%8APlantUML%E8%A1%A8%E7%A4%BA/" class="title">设计模式-UML类图及PlantUML表示</a></p>
+                            <p class="item-date"><time datetime="2019-10-02T13:23:27.000Z" itemprop="datePublished">2019-10-02</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" class="title">Sentinel之——核心实现原理概览</a></p>
+                            <p class="item-date"><time datetime="2019-08-11T15:22:10.000Z" itemprop="datePublished">2019-08-11</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%B8%89)-%E6%8E%A7%E5%88%B6%E8%A1%8C%E4%B8%BA/" class="title">Sentinel之——流量控制(三)-控制行为</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:21:19.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Sentinel/">Sentinel</a></p>
+                            <p class="item-title"><a href="/2019/08/10/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6(%E4%BA%8C)-%E6%8E%A7%E5%88%B6%E7%AD%96%E7%95%A5/" class="title">Sentinel之——流量控制(二)-控制策略</a></p>
+                            <p class="item-date"><time datetime="2019-08-10T15:20:43.000Z" itemprop="datePublished">2019-08-10</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ARTS/">ARTS</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Dubbo/">Dubbo</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JMH/">JMH</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/JUC/">JUC</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Sentinel/">Sentinel</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringMVC/">SpringMVC</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法与数据结构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><span class="category-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a><span class="archive-list-count">3</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/ARTS/" style="font-size: 20px;">ARTS</a> <a href="/tags/Dubbo/" style="font-size: 16px;">Dubbo</a> <a href="/tags/JMH/" style="font-size: 10px;">JMH</a> <a href="/tags/JUC/" style="font-size: 18px;">JUC</a> <a href="/tags/Sentinel/" style="font-size: 16px;">Sentinel</a> <a href="/tags/Spring/" style="font-size: 14px;">Spring</a> <a href="/tags/SpringMVC/" style="font-size: 12px;">SpringMVC</a> <a href="/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 10px;">算法与数据结构</a> <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 12px;">设计模式</a>
+        </div>
+    </div>
+
+    
+    <div id="toTop" class="fas fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2025 Chenyan<br>               
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+            <br/>
+<!--             <a href="https://beian.miit.gov.cn" target="_blank">浙ICP备19017706号-1</a> -->
+            <!-- 百度统计 -->
+            <script>
+                var _hmt = _hmt || [];
+                (function() {
+                  var hm = document.createElement("script");
+                  hm.src = "https://hm.baidu.com/hm.js?83c44004e5808db0cd6dbb2ad4295c62";
+                  var s = document.getElementsByTagName("script")[0]; 
+                  s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+    </div>
+</body>
+</html>
