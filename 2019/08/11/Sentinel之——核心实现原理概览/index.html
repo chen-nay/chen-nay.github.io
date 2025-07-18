@@ -12,15 +12,15 @@
 <meta property="og:site_name" content="Chenyan">
 <meta property="og:description" content="0 前言本文来大致了解一下Sentinel的工作流程">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://qn.zwuyang.cn/sentinel%E6%8F%92%E6%A7%BD%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%9B%BE/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/sentinel%E8%8A%82%E7%82%B9Slot%E9%93%BE%E6%8E%A5%E5%9B%BE-%E9%80%85%E5%BC%88/no.watermark">
-<meta property="og:image" content="http://qn.zwuyang.cn/Setinel-slotbuilder/picture.logo">
+<meta property="og:image" content="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/sentinel%E6%8F%92%E6%A7%BD%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%9B%BE.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/sentinel%E8%8A%82%E7%82%B9Slot%E9%93%BE%E6%8E%A5%E5%9B%BE-%E9%80%85%E5%BC%88.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/Setinel-slotbuilder.png">
 <meta property="article:published_time" content="2019-08-11T15:22:10.000Z">
-<meta property="article:modified_time" content="2019-11-04T16:24:09.000Z">
+<meta property="article:modified_time" content="2025-07-18T02:14:38.987Z">
 <meta property="article:author" content="Chenyan">
 <meta property="article:tag" content="Sentinel">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://qn.zwuyang.cn/sentinel%E6%8F%92%E6%A7%BD%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%9B%BE/picture.logo">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/sentinel%E6%8F%92%E6%A7%BD%E7%B1%BB%E7%BB%A7%E6%89%BF%E5%9B%BE.png">
     
 
     
@@ -269,11 +269,10 @@
 <h3 id="1-概览"><a href="#1-概览" class="headerlink" title="1 概览"></a>1 概览</h3><p>官网工作原理文章：<a href="https://github.com/alibaba/Sentinel/wiki/Sentinel%E5%B7%A5%E4%BD%9C%E4%B8%BB%E6%B5%81%E7%A8%8B">https://github.com/alibaba/Sentinel/wiki/Sentinel工作主流程</a></p>
 <h4 id="1-1-核心功能Slot"><a href="#1-1-核心功能Slot" class="headerlink" title="1.1 核心功能Slot"></a>1.1 核心功能Slot</h4><p>看过官网介绍工作原理的文章之后，应该能知道，Sentinel的工作是依赖多个slot类，多个slot类构成一条链来依次校验当前请求资源是否触发流控，各个slot类各司其职，完成诸如：流量、熔断、黑白名单等功能，那么首先来看下Sentinel都包含了哪些slot类。</p>
 <p>红框内为责任链构造类，白框中为自定义的slot槽类，可以扩展自定义功能。</p>
-<img src="http://qn.zwuyang.cn/sentinel插槽类继承图/picture.logo" width="622" height="402"/>
+<img src="sentinel插槽类继承图.png" alt="sentinel插槽类继承图"/>
 
 <p>各个slot类在运行期间默认的调用顺序入下图所示，图片来源：<a href="https://www.jianshu.com/p/0e218ef7f505">https://www.jianshu.com/p/0e218ef7f505</a>  作者<code>逅弈</code></p>
-<img src="http://qn.zwuyang.cn/sentinel节点Slot链接图-逅弈/no.watermark" width="522" height="402"/>
-
+<img src="sentinel节点Slot链接图-逅弈.png" alt="sentinel节点Slot链接图-逅弈" width="522" height="402"/>
 
 
 <ul>
@@ -287,7 +286,8 @@
 <li><code>DegradeSlot</code> 则通过统计信息，以及预设的规则，来做熔断降级；</li>
 </ul>
 <h4 id="1-2-时序图"><a href="#1-2-时序图" class="headerlink" title="1.2 时序图"></a>1.2 时序图</h4><p>那么运行期间，从类<code>SphU.entry()</code>入手，一次限流判断、计数的全过程时序图大致如下，可以通过时序图来大致了解整个过程经历那些步骤：</p>
-<p><img src="http://qn.zwuyang.cn/Setinel-slotbuilder/picture.logo" alt="单次请求资源限流计数时序图"></p>
+<img src="Setinel-slotbuilder.png" alt="Setinel-slotbuilder"/>
+
 <p>另外看一下将所有slot类构建成一个责任链，默认的<code>build</code>实现：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DefaultSlotChainBuilder</span> <span class="keyword">implements</span> <span class="title class_">SlotChainBuilder</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> ProcessorSlotChain <span class="title function_">build</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ProcessorSlotChain</span> <span class="variable">chain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultProcessorSlotChain</span>();</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">NodeSelectorSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">ClusterBuilderSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">LogSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">StatisticSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">SystemSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">AuthoritySlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">FlowSlot</span>());</span><br><span class="line">        chain.addLast(<span class="keyword">new</span> <span class="title class_">DegradeSlot</span>());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> chain;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -308,7 +308,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" data-id="cmceore4w001vcqbohi2gd4jo" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/08/11/Sentinel%E4%B9%8B%E2%80%94%E2%80%94%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%A6%82%E8%A7%88/" data-id="cmd87fwn90023zwbo8rmddeg7" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding

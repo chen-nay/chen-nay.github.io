@@ -12,15 +12,15 @@
 <meta property="og:site_name" content="Chenyan">
 <meta property="og:description" content="1 前言首先知道服务引用是什么，做了什么。  consumer注册到注册中心 consumer订阅provider、配置、路由 consumer连接provider 每一个服务提供者的服务生成一个invoker 合并invoker(cluster) 对invoker生成代理">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/dubbo-cluster-%E5%90%88%E5%B9%B6invoker/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/dubbo-%E5%90%88%E5%B9%B6%E4%B9%8B%E5%90%8E%E7%9A%84invoker/picture.logo">
+<meta property="og:image" content="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/Dubbo_%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/dubbo-cluster-%E5%90%88%E5%B9%B6invoker.png">
+<meta property="og:image" content="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/dubbo-%E5%90%88%E5%B9%B6%E4%B9%8B%E5%90%8E%E7%9A%84invoker.png">
 <meta property="article:published_time" content="2019-03-12T14:25:10.000Z">
-<meta property="article:modified_time" content="2019-10-20T15:21:49.000Z">
+<meta property="article:modified_time" content="2025-07-18T02:16:48.747Z">
 <meta property="article:author" content="Chenyan">
 <meta property="article:tag" content="Dubbo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8/picture.logo">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/Dubbo_%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8.png">
     
 
     
@@ -285,7 +285,9 @@
 <li>设置为false时，只有在使用到dobbo配置的bean时才进行引用，入口方法是：<code>com.alibaba.dubbo.config.spring.ReferenceBean#getObject</code>，属于懒汉式</li>
 </ol>
 <h2 id="3-引用时序图"><a href="#3-引用时序图" class="headerlink" title="3 引用时序图"></a>3 引用时序图</h2><p>无论引用时机是什么，最终会走到<code>com.alibaba.dubbo.config.ReferenceConfig#get()</code>方法中，我们从这个方法开始</p>
-<p><img src="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8/picture.logo" alt="服务引用时序图"><br>真实情况会比上面时序图复杂很多，有很多其它的分支，我就简单画了下重要的步骤，另外时序图上默认是远程引用，并且只有单一注册中心zk，并且是dubbo协议。</p>
+<img src="Dubbo_服务引用.png" alt="Dubbo_服务引用"/>
+
+<p>真实情况会比上面时序图复杂很多，有很多其它的分支，我就简单画了下重要的步骤，另外时序图上默认是远程引用，并且只有单一注册中心zk，并且是dubbo协议。</p>
 <h2 id="4-引用过程解析"><a href="#4-引用过程解析" class="headerlink" title="4 引用过程解析"></a>4 引用过程解析</h2><p>从时序图就可以看出来，引用的过程还是很复杂的，首先我们从大体上把握引用的过程一共做了哪些事情。</p>
 <ul>
 <li>各种配置校验加组装</li>
@@ -322,10 +324,10 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">invoker = new InvokerDelegate&lt;T&gt;(protocol.refer(serviceType, url), url, providerUrl);</span><br></pre></td></tr></table></figure>
 <p>看方法名就知道是要生成invoker，注意这个地方是针对每一个service的每个服务提供者生成一个invoker。例如本例中DemoService这个服务，有两个Provider提供者，所以会生成两个invoker。每一个invoker的生成在<code>DubboProtocol#refer</code>中进行(SPI)，见4.2.3小节</p>
 <p><strong>&lt;3&gt; 合并invoker</strong></p>
-<p>最终返回到<code>RegistryProtocol#doRefer</code>方法中<br><img src="http://qn.zwuyang.cn/dubbo/dubbo-cluster-%E5%90%88%E5%B9%B6invoker/picture.logo" alt="dubbo-cluster-合并invoker"></p>
-<p>从上图我们看到一个服务有两个提供者，但是我们调用的时候是基于invoker维度，屏蔽了具体的提供者信息，所以在这里需要合并DubboInvoker，实现更高的抽象。合并后的invoker：</p>
-<p><img src="http://qn.zwuyang.cn/dubbo/dubbo-%E5%90%88%E5%B9%B6%E4%B9%8B%E5%90%8E%E7%9A%84invoker/picture.logo" alt="dubbo-合并之后的invoker"></p>
-<p>集群模式默认为failover，如果有重试次数设置，则会进行重试。</p>
+<p>最终返回到<code>RegistryProtocol#doRefer</code>方法中<br><img src="dubbo-cluster-合并invoker.png" alt="dubbo-cluster-合并invoker"/><br>从上图我们看到一个服务有两个提供者，但是我们调用的时候是基于invoker维度，屏蔽了具体的提供者信息，所以在这里需要合并DubboInvoker，实现更高的抽象。合并后的invoker：</p>
+<img src="dubbo-合并之后的invoker.png" alt="dubbo-合并之后的invoker"/>
+集群模式默认为failover，如果有重试次数设置，则会进行重试。
+
 <h4 id="4-2-3-DubboProtocol-连接provider、生成invoker"><a href="#4-2-3-DubboProtocol-连接provider、生成invoker" class="headerlink" title="4.2.3 DubboProtocol 连接provider、生成invoker"></a>4.2.3 DubboProtocol 连接provider、生成invoker</h4><p>进入到<code>DubboProtocol#refer</code></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; Invoker&lt;T&gt; <span class="title function_">refer</span><span class="params">(Class&lt;T&gt; serviceType, URL url)</span> <span class="keyword">throws</span> RpcException &#123;</span><br><span class="line">    <span class="comment">// 优化序列化相关</span></span><br><span class="line">    optimizeSerialization(url);</span><br><span class="line">    <span class="comment">// 创建 rpc invoker.</span></span><br><span class="line">    <span class="comment">// 在getClients(url)中完成provider的连接</span></span><br><span class="line">    <span class="comment">// 获取客户端实例，实例类型为 ExchangeClient</span></span><br><span class="line">    DubboInvoker&lt;T&gt; invoker = <span class="keyword">new</span> <span class="title class_">DubboInvoker</span>&lt;T&gt;(serviceType, url, getClients(url), invokers);</span><br><span class="line">    invokers.add(invoker);</span><br><span class="line">    <span class="keyword">return</span> invoker;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在这个方法中会完成provider的连接和invoker的生成。先看</p>
@@ -335,8 +337,9 @@
 <p><strong>&lt;2&gt; 共享的意思即是同一个provider服务器，比方说172.16.104.143这一个提供者，即使有10个Service，consumer也只与其建立一个连接，所有的服务在调用的时候共享这一个连接。</strong></p>
 <p>无论哪一种最后会到<code>DubboProtocol#initClient</code>方法中</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">private ExchangeClient initClient(URL url) &#123;</span><br><span class="line">    //&lt;1&gt; 获取客户端类型，默认为 netty3</span><br><span class="line">    String str = url.getParameter(Constants.CLIENT_KEY, url.getParameter(Constants.SERVER_KEY, Constants.DEFAULT_REMOTING_CLIENT));</span><br><span class="line"></span><br><span class="line">    // 添加编解码 默认为dubbo</span><br><span class="line">    url = url.addParameter(Constants.CODEC_KEY, DubboCodec.NAME);</span><br><span class="line">    // 添加心跳信息 默认为60秒</span><br><span class="line">    url = url.addParameterIfAbsent(Constants.HEARTBEAT_KEY, String.valueOf(Constants.DEFAULT_HEARTBEAT));</span><br><span class="line"></span><br><span class="line">    // 检测客户端类型是否支持 不支持就抛异常 目前是netty</span><br><span class="line">    if (str != null &amp;&amp; str.length() &gt; 0 &amp;&amp; !ExtensionLoader.getExtensionLoader(Transporter.class).hasExtension(str)) &#123;</span><br><span class="line">        throw new RpcException(&quot;Unsupported client type: &quot; + str + &quot;,&quot; +</span><br><span class="line">                &quot; supported client type is &quot; + StringUtils.join(ExtensionLoader.getExtensionLoader(Transporter.class).getSupportedExtensions(), &quot; &quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ExchangeClient client;</span><br><span class="line">    try &#123;</span><br><span class="line">        // &lt;2&gt; 懒加载客户端</span><br><span class="line">        if (url.getParameter(Constants.LAZY_CONNECT_KEY, false)) &#123;</span><br><span class="line">            client = new LazyConnectExchangeClient(url, requestHandler);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">         // 正常客户端 即刻连接provider</span><br><span class="line">            client = Exchangers.connect(url, requestHandler);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (RemotingException e) &#123;</span><br><span class="line">        throw new RpcException(&quot;Fail to create remoting client for service(&quot; + url + &quot;): &quot; + e.getMessage(), e);</span><br><span class="line">    &#125;</span><br><span class="line">    return client;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>&lt;**1**&gt; 在consumer标签中配置client属性，如果dubbo不支持设置的类型，就抛异常，测试了一下，目前貌似只能设置为netty，默认情况下也是netty</p>
-<p>&lt;**2**&gt; consumer标签设置了lazy，区别就是默认情况下，lazy为false，执行到这里就会连接provider，如果lazy的话，是在有调用的时候才连接provider。</p>
+
+<p><strong>&lt;1&gt;</strong> 在consumer标签中配置client属性，如果dubbo不支持设置的类型，就抛异常，测试了一下，目前貌似只能设置为netty，默认情况下也是netty</p>
+<p><strong>&lt;2&gt;</strong> consumer标签设置了lazy，区别就是默认情况下，lazy为false，执行到这里就会连接provider，如果lazy的话，是在有调用的时候才连接provider。</p>
 <p><code>Exchangers.connect(url, requestHandler)</code> 方法最终调用到<code>Transporters#connect</code>建立连接，这里就不深入了。最后返回<code>DubboProtocol#refer</code>，生成<code>DubboInvoker</code></p>
 <p>截止到这里，consumer的注册、对provider的订阅、连接，invoker的生成、合并都已经完成，接下来要对invoker进行代理的生成。</p>
 <h2 id="4-3-创建代理"><a href="#4-3-创建代理" class="headerlink" title="4.3 创建代理"></a>4.3 创建代理</h2><p>回到<code>ReferenceConfig#createProxy</code>的最后一行：</p>
@@ -354,7 +357,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/" data-id="cmceore4u000zcqbods633q98" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/03/12/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E5%BC%95%E7%94%A8%E8%BF%87%E7%A8%8B/" data-id="cmd87fwn6000zzwboaz9j12gq" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding

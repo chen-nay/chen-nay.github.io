@@ -12,18 +12,18 @@
 <meta property="og:site_name" content="Chenyan">
 <meta property="og:description" content="[toc] 1 前言加载完配置，Spring容器启动完成后。通过Spring的扩展接口，开始进行Dubbo Provider端的服务暴露过程。服务暴露的过程，以Dubbo协议、zk注册中心为例，主要包含：  前置工作，校验参数，组装URL 本地暴露 远程暴露  开启通信服务器（默认netty） 连接注册中心 节点创建，注册服务 订阅配置    官方文档：http:&#x2F;&#x2F;dubbo.apache.or">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%B1%BB%E5%9B%BE/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/zk%E8%8A%82%E7%82%B9%E6%83%85%E5%86%B5/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/zk%E8%AE%A2%E9%98%85%E7%B1%BB%E5%9E%8B/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B/picture.logo">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/Dubbo_%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%B1%BB%E5%9B%BE.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/zk%E8%8A%82%E7%82%B9%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/zk%E8%AE%A2%E9%98%85%E7%B1%BB%E5%9E%8B.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B.png">
 <meta property="article:published_time" content="2019-02-26T14:25:10.000Z">
-<meta property="article:modified_time" content="2019-10-20T15:18:46.000Z">
+<meta property="article:modified_time" content="2025-07-18T02:14:38.978Z">
 <meta property="article:author" content="Chenyan">
 <meta property="article:tag" content="Dubbo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2/picture.logo">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/Dubbo_%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2.png">
     
 
     
@@ -290,7 +290,8 @@
 <li>不连接注册中心</li>
 </ul>
 <p>下面主要介绍远程暴露，看完远程暴露以后，跟一下代码很容易明白本地暴露</p>
-<h3 id="3-1-远程暴露时序图"><a href="#3-1-远程暴露时序图" class="headerlink" title="3.1 远程暴露时序图"></a>3.1 远程暴露时序图</h3><p><img src="http://qn.zwuyang.cn/dubbo/Dubbo_%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2/picture.logo" alt="暴露服务"></p>
+<h3 id="3-1-远程暴露时序图"><a href="#3-1-远程暴露时序图" class="headerlink" title="3.1 远程暴露时序图"></a>3.1 远程暴露时序图</h3><img src="Dubbo_服务暴露.png" alt="Dubbo_服务暴露"/>
+
 <h3 id="3-2-暴露过程解析"><a href="#3-2-暴露过程解析" class="headerlink" title="3.2 暴露过程解析"></a>3.2 暴露过程解析</h3><p>这个过程会有点长，尽量从大体上弄明白暴露的过程</p>
 <p>Spring 容器刷新时回调<code>ServiceBean#onApplicationEvent</code>：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(ContextRefreshedEvent event)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDelay() &amp;&amp; !isExported() &amp;&amp; !isUnexported()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (logger.isInfoEnabled()) &#123;</span><br><span class="line">                logger.info(<span class="string">&quot;The service ready on spring started. service: &quot;</span> + getInterface());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 核心方法</span></span><br><span class="line">            export();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -320,7 +321,10 @@
 <h3 id="3-3-protocol-export"><a href="#3-3-protocol-export" class="headerlink" title="3.3 protocol.export"></a>3.3 protocol.export</h3><h4 id="3-3-1-静态属性protocol"><a href="#3-3-1-静态属性protocol" class="headerlink" title="3.3.1 静态属性protocol"></a>3.3.1 静态属性protocol</h4><p>接上小节，此处的<code>protocol</code>是<code>ServiceConfig</code>的静态属性
 	</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Protocol</span> <span class="variable">protocol</span> <span class="operator">=</span> ExtensionLoader.getExtensionLoader(Protocol.class).getAdaptiveExtension();</span><br></pre></td></tr></table></figure>
-<p>可以看到是通过SPI自适应加载进来的Protocol，关于SPI的过程这里不展开，这里获取到<code>DubboProtocol</code>。我们在<code>DubboProtocol</code>中打下断点调试一下：<br>	发现确实走到了<code>DubboProtocol#export</code>方法中，但是我们看一下方法调用堆栈，发现，调用顺序中有一个<code>Protocol$Adaptive</code>类：<br>	<img src="http://qn.zwuyang.cn/dubbo/%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95/picture.logo" alt="断点调试"><br>	<br>其实该类是运行时动态生成的。
+<p>可以看到是通过SPI自适应加载进来的Protocol，关于SPI的过程这里不展开，这里获取到<code>DubboProtocol</code>。我们在<code>DubboProtocol</code>中打下断点调试一下：<br>	发现确实走到了<code>DubboProtocol#export</code>方法中，但是我们看一下方法调用堆栈，发现，调用顺序中有一个<code>Protocol$Adaptive</code>类：</p>
+<img src="暴露过程断点调试.png" alt="暴露过程断点调试"/>
+
+<p>其实该类是运行时动态生成的。
 	</p>
 <h4 id="3-3-2-Protocol-Adaptive类"><a href="#3-3-2-Protocol-Adaptive类" class="headerlink" title="3.3.2 Protocol$Adaptive类"></a>3.3.2 <code>Protocol$Adaptive</code>类</h4><p>该类是在<code>ExtensionLoader#createAdaptiveExtensionClass</code>中动态生成的：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Class&lt;?&gt; createAdaptiveExtensionClass() &#123;</span><br><span class="line">	<span class="comment">// code即为原始代码</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">code</span> <span class="operator">=</span> createAdaptiveExtensionClassCode();</span><br><span class="line">    <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> findClassLoader();</span><br><span class="line">    com.alibaba.dubbo.common.compiler.<span class="type">Compiler</span> <span class="variable">compiler</span> <span class="operator">=</span> ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.common.compiler.Compiler.class).getAdaptiveExtension();</span><br><span class="line">    <span class="keyword">return</span> compiler.compile(code, classLoader);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -336,10 +340,14 @@
 
 <p>截止到这里会把真实启动通信服务器的任务下放到例如Netty这样的框架上，默认下启动Netty3，继续跟进<code>Exchangers.bind</code>方法，会在<code>AbstractServer#doOpen</code>的模板方法中，找到真实的通信服务器并启动。</p>
 <p>&lt;2&gt; 注册到注册中心。先来看下关于注册的类图结构：</p>
-<p><img src="http://qn.zwuyang.cn/dubbo/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E7%B1%BB%E5%9B%BE/picture.logo" alt="注册中心类图"></p>
+<img src="注册中心类图.png" alt="注册中心类图"/>
+
 <p>debug一下代码，并结合前面的时序图可以知道最终会进入到<code>FailbackRegistry#doRegister</code>模板方法中进行注册，默认SPI会加载zk注册中心并且使用<code>curator</code>客户端。我们看一下<code>ZookeeperRegistry#doRegister</code>方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doRegister</span><span class="params">(URL url)</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        zkClient.create(toUrlPath(url), url.getParameter(Constants.DYNAMIC_KEY, <span class="literal">true</span>));</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RpcException</span>(<span class="string">&quot;Failed to register &quot;</span> + url + <span class="string">&quot; to zookeeper &quot;</span> + getUrl() + <span class="string">&quot;, cause: &quot;</span> + e.getMessage(), e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>执行完<code>ZookeeperRegistry#doRegister</code>方法后结合zk可视化界面ZooInspector观察现在zk的节点情况：<br><img src="http://qn.zwuyang.cn/dubbo/zk%E8%8A%82%E7%82%B9%E6%83%85%E5%86%B5/picture.logo" alt="zk节点情况"><br>debug一下回到<code>RegistryProtocol#export</code>中，进行第三步，订阅配置</p>
+<p>执行完<code>ZookeeperRegistry#doRegister</code>方法后结合zk可视化界面ZooInspector观察现在zk的节点情况：</p>
+<img src="zk节点情况.png" alt="zk节点情况"/>
+
+<p>debug一下回到<code>RegistryProtocol#export</code>中，进行第三步，订阅配置</p>
 <p>&lt;3&gt; 订阅 配置</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener);</span><br></pre></td></tr></table></figure>
 <p>跟上面&lt;2&gt;的注册类似，最终进行订阅是在<code>ZookeeperRegistry#doSubscribe</code>中完成的：</p>
@@ -347,10 +355,12 @@
 <p>&lt;1&gt; 因为消费端和生产端都会走到这里来，对于消费端是需要订阅不同类型数据的，比如既要订阅Type为providers的数据，也要订阅configurators和路由routers。</p>
 <p>&lt;2&gt; 这里的创建节点是创建configurators节点，参数<code>false</code>表明这个这点的创建是永久节点。</p>
 <p>&lt;3&gt; 这里是订阅步骤2创建的节点，这里对于Provider就是订阅configurators数据，这个节点的数据。这里要注意订阅有两种类型，一种是订阅节点数据本身的改变，一种是订阅节点子节点的变化，比如子节点增加或者减少，我们看下<code>org.I0Itec.zkclient.ZkClient</code>类的部分方法，从方法名可以看出，childChanges和dataChanges。</p>
-<p><img src="http://qn.zwuyang.cn/dubbo/zk%E8%AE%A2%E9%98%85%E7%B1%BB%E5%9E%8B/picture.logo" alt="zk订阅类型"></p>
+<img src="zk订阅类型.png" alt="zk订阅类型"/>
+
 <p>这里使用的都是前者<code>子节点改变时</code>通知订阅者</p>
 <p>回到代码中，Provider订阅的是<code>configurators </code>，然后使用的是<code>RegistryProtocol.OverrideListener</code>实现回调</p>
-<h2 id="4-注册中心"><a href="#4-注册中心" class="headerlink" title="4 注册中心"></a>4 注册中心</h2><p><img src="http://qn.zwuyang.cn/dubbo/%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B/picture.logo" alt="zk四种节点类型"></p>
+<h2 id="4-注册中心"><a href="#4-注册中心" class="headerlink" title="4 注册中心"></a>4 注册中心</h2><img src="节点类型.png" alt="节点类型"/>
+
 <h3 id="4-1-节点类型"><a href="#4-1-节点类型" class="headerlink" title="4.1 节点类型"></a>4.1 节点类型</h3><p>上图中前面三层都是永久节点，下面URL层是临时节点，随着消费者或者生产者的下线，会基于zk的临时节点机制将其下线。同时有订阅事件的话，会将数据全量推送给订阅者，这里全量指的是该Type下的全量子节点。</p>
 <h3 id="4-2-watch"><a href="#4-2-watch" class="headerlink" title="4.2 watch"></a>4.2 watch</h3><p>zk的watch机制就不过多展开了，<code>zkClient</code>和<code>curator</code>客户端都是实现了<code>org.apache.zookeeper.Watcher</code>类，并在<code>process</code>内部实现回调逻辑，继而实现了watch机制；另外注意watch机制是一次性的，订阅的数据发生变化以后，zk将数据推送到客户端(dubbo)，在回调处理当中需要进行重新订阅。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.iocoder.cn/Dubbo/good-collection/?title">http://www.iocoder.cn/Dubbo/good-collection/?title</a></p>
@@ -364,7 +374,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/" data-id="cmceore4u0012cqbodrfmg4xs" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/02/26/Dubbo%E4%B9%8B%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E8%BF%87%E7%A8%8B/" data-id="cmd87fwn70017zwbo7n88gfxg" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding

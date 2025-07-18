@@ -12,13 +12,13 @@
 <meta property="og:site_name" content="Chenyan">
 <meta property="og:description" content="前言首先看一看Dubbo官网配置加载流程：http:&#x2F;&#x2F;dubbo.apache.org&#x2F;zh-cn&#x2F;docs&#x2F;user&#x2F;configuration&#x2F;configuration-load-process.html">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_XML%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/picture.logo">
+<meta property="og:image" content="http://yoursite.com/2019/02/11/Dubbo%E4%B9%8B%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/Dubbo_xml%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B.png">
 <meta property="article:published_time" content="2019-02-11T14:25:10.000Z">
-<meta property="article:modified_time" content="2019-10-20T15:31:35.000Z">
+<meta property="article:modified_time" content="2025-07-18T02:14:38.998Z">
 <meta property="article:author" content="Chenyan">
 <meta property="article:tag" content="Dubbo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://qn.zwuyang.cn/dubbo/Dubbo_XML%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/picture.logo">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/11/Dubbo%E4%B9%8B%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/Dubbo_xml%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B.png">
     
 
     
@@ -258,7 +258,7 @@
             
                 <div id="toc" class="toc-article">
                 <strong class="toc-title">文章目录</strong>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">1 常见配置方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-XML%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E4%B8%BB%E8%BF%87%E7%A8%8B"><span class="toc-text">2 XML加载配置主过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-DubboBeanDefinitionParser-parse-%E8%A7%A3%E6%9E%90"><span class="toc-text">3 DubboBeanDefinitionParser#parse()解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%94%9F%E6%88%90RootBeanDefinition%E5%AF%B9%E8%B1%A1"><span class="toc-text">3.1 生成RootBeanDefinition对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%AE%BE%E7%BD%AEbean%E7%9A%84id%E5%B1%9E%E6%80%A7"><span class="toc-text">3.2 设置bean的id属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-text">3.3 一些特殊情况的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%B0%86%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E5%88%B0bean%E5%AF%B9%E8%B1%A1"><span class="toc-text">3.4 将属性设置到bean对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%80%BB%E8%BF%B0"><span class="toc-text">3.5 总述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">3.6 参考链接</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-text">1 常见配置方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-XML%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E4%B8%BB%E8%BF%87%E7%A8%8B"><span class="toc-text">2 XML加载配置主过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%94%9F%E6%88%90RootBeanDefinition%E5%AF%B9%E8%B1%A1"><span class="toc-text">3.1 生成RootBeanDefinition对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%AE%BE%E7%BD%AEbean%E7%9A%84id%E5%B1%9E%E6%80%A7"><span class="toc-text">3.2 设置bean的id属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-text">3.3 一些特殊情况的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%B0%86%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E5%88%B0bean%E5%AF%B9%E8%B1%A1"><span class="toc-text">3.4 将属性设置到bean对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%80%BB%E8%BF%B0"><span class="toc-text">3.5 总述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">3.6 参考链接</span></a></li></ol></li></ol>
                 </div>
             
             <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>首先看一看Dubbo官网配置加载流程：<a href="http://dubbo.apache.org/zh-cn/docs/user/configuration/configuration-load-process.html">http://dubbo.apache.org/zh-cn/docs/user/configuration/configuration-load-process.html</a></p>
@@ -276,8 +276,10 @@
 
 <p>所有 <code>Dubbo</code> 的标签，都统一用 <code>DubboBeanDefinitionParser</code> 进行解析，基于一对一属性映射，将 <code>XML</code> 标签解析为 <code>Bean</code> 对象。</p>
 <p>dubbo解析入口为<br><code>com.alibaba.dubbo.config.spring.schema.DubboBeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)</code>，整体流程时序图如下：</p>
-<p><img src="http://qn.zwuyang.cn/dubbo/Dubbo_XML%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/picture.logo" alt="Dubbo xml加载过程"></p>
-<h2 id="3-DubboBeanDefinitionParser-parse-解析"><a href="#3-DubboBeanDefinitionParser-parse-解析" class="headerlink" title="3 DubboBeanDefinitionParser#parse()解析"></a>3 DubboBeanDefinitionParser#parse()解析</h2><p>这一部分的解析需要对照着代码来看，本文基于<code>Dubbo</code> <code>2.6.3</code>版本。</p>
+<img src="Dubbo_xml加载过程.png" alt="Dubbo_xml加载过程"/>
+## 3 DubboBeanDefinitionParser#parse()解析
+这一部分的解析需要对照着代码来看，本文基于`Dubbo` `2.6.3`版本。
+
 <p>解析<code>Dubbo</code>标签的核心是<code>DubboBeanDefinitionParser#parse(Element element, ParserContext parserContext, Class&lt;?&gt; beanClass, boolean required)</code>方法</p>
 <h3 id="3-1-生成RootBeanDefinition对象"><a href="#3-1-生成RootBeanDefinition对象" class="headerlink" title="3.1 生成RootBeanDefinition对象"></a>3.1 生成RootBeanDefinition对象</h3><p>这个对象用来将解析的属性进行bean definition注册</p>
 <h3 id="3-2-设置bean的id属性"><a href="#3-2-设置bean的id属性" class="headerlink" title="3.2 设置bean的id属性"></a>3.2 设置bean的id属性</h3><p>有些标签我们并没有设置id属性，在解析的时候会按照一些规则来生成默认<code>id</code>。首先如果元素的<code>id</code>属性不存在，若有<code>name</code>属性则以<code>name</code>为<code>id</code>；如果是<code>protocol</code>标签，且未设置<code>id</code>和<code>name</code>属性，<code>id</code>则设置为<code>dubbo</code>，实际上<code>protocol</code>标签的缺省协议即是<code>dubbo</code>。</p>
@@ -313,7 +315,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2019/02/11/Dubbo%E4%B9%8B%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/" data-id="cmceore4t000ucqbo7id986xa" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/02/11/Dubbo%E4%B9%8B%E5%8A%A0%E8%BD%BD%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/" data-id="cmd87fwn6000wzwbo6lxh6kos" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding

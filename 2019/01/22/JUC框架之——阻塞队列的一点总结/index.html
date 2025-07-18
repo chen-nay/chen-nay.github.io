@@ -12,15 +12,15 @@
 <meta property="og:site_name" content="Chenyan">
 <meta property="og:description" content="本文总结一下常见的阻塞队列">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://qn.zwuyang.cn/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-list/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%972/picture.logo">
-<meta property="og:image" content="http://qn.zwuyang.cn/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%973/picture.logo">
+<meta property="og:image" content="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-list.jpeg">
+<meta property="og:image" content="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%972.jpeg">
+<meta property="og:image" content="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%973.jpeg">
 <meta property="article:published_time" content="2019-01-22T14:30:47.000Z">
-<meta property="article:modified_time" content="2019-10-20T05:07:19.000Z">
+<meta property="article:modified_time" content="2025-07-18T02:14:38.996Z">
 <meta property="article:author" content="Chenyan">
 <meta property="article:tag" content="JUC">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://qn.zwuyang.cn/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-list/picture.logo">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-list.jpeg">
     
 
     
@@ -266,7 +266,8 @@
             <p>本文总结一下常见的阻塞队列</p>
 <span id="more"></span>
 
-<p><img src="http://qn.zwuyang.cn/%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97-list/picture.logo" alt="常见阻塞队列"></p>
+<img src="阻塞队列-list.jpeg" alt="阻塞队列-list"/>
+
 <h2 id="1-ArrayBlockingQueue"><a href="#1-ArrayBlockingQueue" class="headerlink" title="1. ArrayBlockingQueue"></a>1. ArrayBlockingQueue</h2><p>有界队列，且大小不可变</p>
 <p>构造函数支持是否公平性，针对的是等待线程，比如有10个线程阻塞在<code>take()</code>操作上，一旦队列有数据了，是否<code>公平性</code>的让10个线程获取数据</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 出列条件 **/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Condition notEmpty;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 入列条件 **/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Condition notFull;</span><br></pre></td></tr></table></figure>
@@ -324,10 +325,10 @@
 <p>测试代码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    PriorityBlockingQueue&lt;String&gt; pbq = <span class="keyword">new</span> <span class="title class_">PriorityBlockingQueue</span>&lt;&gt;();</span><br><span class="line">    pbq.put(<span class="string">&quot;bbbbb&quot;</span>);</span><br><span class="line">    pbq.put(<span class="string">&quot;ccccc&quot;</span>);</span><br><span class="line">    pbq.put(<span class="string">&quot;ddddd&quot;</span>);</span><br><span class="line">    pbq.put(<span class="string">&quot;aaaaa&quot;</span>);</span><br><span class="line">    pbq.put(<span class="string">&quot;ggggg&quot;</span>);</span><br><span class="line">    pbq.put(<span class="string">&quot;fffff&quot;</span>);</span><br><span class="line">    System.out.println(); <span class="comment">// 断点 1</span></span><br><span class="line">    <span class="keyword">while</span> (pbq.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        System.out.println(pbq.poll());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>断点1处的队列元素情况：</p>
-<img src="http://qn.zwuyang.cn/阻塞队列2/picture.logo" alter="博客juc1"/>
+<img src="阻塞队列2.jpeg" alt="阻塞队列2"/>
 
 <p><code>PriorityBlockingQueue</code>可以保证队列头上的元素是最小的(优先的)，但队列中的元素并没有进行排序，因为并没有排序的必要，只需要构建一个小顶堆，保证每次从队列头上获取到最小的元素即可。</p>
-<img src="http://qn.zwuyang.cn/阻塞队列3/picture.logo" alter="博客juc2"/>
+<img src="阻塞队列3.jpeg" alt="阻塞队列3"/>
 
 <p>取操作时会保证头元素始终是最优先的，最终的输出结果即是按顺序输出，整个存取过程其实就是二叉堆排序的过程</p>
 <h3 id="1-4-DelayQueue"><a href="#1-4-DelayQueue" class="headerlink" title="1.4 DelayQueue"></a>1.4 DelayQueue</h3><p>延时<code>Queue</code>，先来看下构造函数</p>
@@ -388,7 +389,7 @@
 
 </div>
 
-    <a data-url="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/" data-id="cmceore4x0025cqbocxvb845x" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
+    <a data-url="http://yoursite.com/2019/01/22/JUC%E6%A1%86%E6%9E%B6%E4%B9%8B%E2%80%94%E2%80%94%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97%E7%9A%84%E4%B8%80%E7%82%B9%E6%80%BB%E7%BB%93/" data-id="cmd87fwn90026zwbo9ce8hbuw" class="article-share-link"><i class="fas fa-share"></i>分享到</a>
 <script>
     (function ($) {
         // Prevent duplicate binding
